@@ -1,0 +1,47 @@
+{
+  "name": "chatmind",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "postinstall": "prisma generate",
+    "lint": "next lint",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "4.11.7",
+    "@prisma/client": "4.11.0",
+    "@tanstack/react-query": "4.26.1",
+    "@trpc/client": "10.15.0",
+    "@trpc/next": "10.15.0",
+    "@trpc/react-query": "10.15.0",
+    "@trpc/server": "10.15.0",
+    "next": "13.2.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "superjson": "1.12.2",
+    "zod": "3.21.4"
+  },
+  "devDependencies": {
+    "@types/eslint": "8.21.1",
+    "@types/node": "18.15.0",
+    "@types/prettier": "2.7.2",
+    "@types/react": "18.0.28",
+    "@types/react-dom": "18.0.11",
+    "@typescript-eslint/eslint-plugin": "5.54.1",
+    "@typescript-eslint/parser": "5.54.1",
+    "autoprefixer": "10.4.14",
+    "eslint": "8.36.0",
+    "eslint-config-next": "13.2.4",
+    "postcss": "8.4.21",
+    "prettier": "2.8.4",
+    "prettier-plugin-tailwindcss": "0.2.4",
+    "prisma": "4.11.0",
+    "tailwindcss": "3.2.7",
+    "typescript": "4.9.5"
+  },
+  "ct3aMetadata": {
+    "initVersion": "7.7.0"
+  }
+}
