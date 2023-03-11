@@ -6,4 +6,5 @@ html,
 body,
 #__next {
   height: 100%;
+  @apply font-sans text-slate-900;
 }
