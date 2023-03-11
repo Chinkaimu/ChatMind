@@ -24,7 +24,9 @@ const chat = async (req: Request): Promise<Response> => {
   if (!prompt) {
     return new Response("No prompt in the request", { status: 400 });
   }
-
+  // const api = new ChatGPTAPI({
+  //   apiKey: process.env.OPENAI_API_KEY || ''
+  // })
   const payload: OpenAIStreamPayload = {
     model: "gpt-3.5-turbo",
     messages: [{ role: "user", content: prompt }],
@@ -91,6 +93,7 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
           try {
             const json = JSON.parse(data);
             const text = json.choices[0].delta?.content || "";
+            // console.log(JSON.stringify(json, null, 2));
             if (counter < 2 && (text.match(/\n/) || []).length) {
               // this is a prefix character (i.e., "\n\n"), do nothing
               return;

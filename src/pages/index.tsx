@@ -19,10 +19,11 @@ const Home: NextPage = () => {
   const [input, setInput] = React.useState<string>("");
   const [loading, setLoading] = React.useState(false);
   const [messages, setMessages] = React.useState<Chat[]>([]);
+  const listRef = React.useRef<HTMLElement>(null);
 
   const handleClickSend = async () => {
-    setLoading(true);
     const index = messages.length;
+    setLoading(true);
     setMessages((prev) => [
       ...prev,
       {
@@ -61,20 +62,21 @@ const Home: NextPage = () => {
       setMessages((prev) => {
         const newMessages = [...prev];
         const msg = newMessages[index];
-        console.log({
-          chunkValue,
-          answer: msg?.answer,
-        });
+        // console.log({
+        //   chunkValue,
+        //   answer: msg?.answer,
+        // });
         if (msg) {
-          msg.answer += chunkValue;
+          msg.answer = `${msg.answer}${chunkValue}`;
         } else {
           throw new Error("Message not found");
         }
         return newMessages;
       });
+      listRef.current?.scrollTo({
+        top: listRef.current.scrollHeight,
+      });
     }
-
-    // scrollToBios();
     setLoading(false);
   };
   return (
@@ -88,10 +90,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="mx-auto min-h-full max-w-3xl">
-        <section className="mb-8 flex flex-col gap-4">
+        <section className="mb-8 flex flex-col gap-4" ref={listRef}>
           {messages.map((msg) => (
             <div
-              key={msg.createdAt.toISOString()}
+              key={msg.createdAt.toISOString() + msg.answer}
               className="flex flex-col gap-2"
             >
               <UserMessage avatarUrl={user?.profileImageUrl}>
@@ -101,10 +103,10 @@ const Home: NextPage = () => {
             </div>
           ))}
         </section>
-        <div className="flex items-center gap-2">
+        <div className="fixed bottom-0 flex w-full max-w-3xl items-center gap-2 border-t py-6">
           <Input
             name="chat"
-            placeholder="Ask anything. (Press Shift + Enter to send))"
+            placeholder="Ask anything. (Press Shift + Enter to send)"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
