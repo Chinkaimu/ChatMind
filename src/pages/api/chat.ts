@@ -7,6 +7,7 @@ import {
   type ParsedEvent,
   type ReconnectInterval,
 } from "eventsource-parser";
+import { type OpenAIStreamPayload } from "../../types";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("Missing env var from OpenAI");
@@ -24,9 +25,6 @@ const chat = async (req: Request): Promise<Response> => {
   if (!prompt) {
     return new Response("No prompt in the request", { status: 400 });
   }
-  // const api = new ChatGPTAPI({
-  //   apiKey: process.env.OPENAI_API_KEY || ''
-  // })
   const payload: OpenAIStreamPayload = {
     model: "gpt-3.5-turbo",
     messages: [{ role: "user", content: prompt }],
@@ -34,7 +32,7 @@ const chat = async (req: Request): Promise<Response> => {
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0,
-    max_tokens: 200,
+    max_tokens: 500,
     stream: true,
     n: 1,
   };
@@ -44,25 +42,6 @@ const chat = async (req: Request): Promise<Response> => {
 };
 
 export default chat;
-
-export type ChatGPTAgent = "user" | "system";
-
-export interface ChatGPTMessage {
-  role: ChatGPTAgent;
-  content: string;
-}
-
-export interface OpenAIStreamPayload {
-  model: string;
-  messages: ChatGPTMessage[];
-  temperature: number;
-  top_p: number;
-  frequency_penalty: number;
-  presence_penalty: number;
-  max_tokens: number;
-  stream: boolean;
-  n: number;
-}
 
 export async function OpenAIStream(payload: OpenAIStreamPayload) {
   const encoder = new TextEncoder();

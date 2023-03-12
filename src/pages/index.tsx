@@ -5,14 +5,22 @@ import React from "react";
 import { Send } from "lucide-react";
 
 import { useLocalStorage } from "usehooks-ts";
-import { Header, Button, TextArea, BotMessage, UserMessage } from "../components";
-
-type Chat = {
-  question: string;
-  answer: string;
-  createdAt: number;
-  error?: string;
-};
+import {
+  Header,
+  Button,
+  TextArea,
+  BotMessage,
+  UserMessage,
+  TypographySubtle,
+  useToast,
+} from "../components";
+import { type OpenAIStreamPayload, type Chat } from "../types";
+import Link from "next/link";
+import {
+  createParser,
+  ParsedEvent,
+  ReconnectInterval,
+} from "eventsource-parser";
 
 const Home: NextPage = () => {
   const { user } = useUser();
@@ -41,30 +49,79 @@ const Home: NextPage = () => {
       return newMessages;
     });
   };
+  const [apiKey, setApiKey] = useLocalStorage("chatmind.api-key", "");
+  const { toast } = useToast();
   const handleClickSend = async () => {
+    if (!apiKey) {
+      if (!input || !input.startsWith("sk-")) {
+        toast({
+          variant: "destructive",
+          title: "Invalid API Key",
+          description: "Please double check your API Key.",
+        });
+        return;
+      }
+      setApiKey(input);
+      setInput("");
+      return;
+    }
     const index = chatList.length;
     setInput("");
-    setChatList((prev) => [
-      ...prev,
-      {
-        question: input,
-        answer: "",
-        createdAt: Date.now(),
-      },
-    ]);
+    const newChat: Chat = {
+      question: input,
+      answer: "",
+      createdAt: Date.now(),
+    };
+    setChatList((prev) => [...prev, newChat]);
     scrollListIntoView();
     let data: ReadableStream<Uint8Array> | null;
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prompt: input,
-        }),
-      });
-
+      const messages = [...chatList.slice(-5), newChat]
+        .map((chat) => {
+          return [
+            {
+              role: "user",
+              content: chat.question,
+            },
+            ...(chat.answer
+              ? [
+                  {
+                    role: "assistant",
+                    content: chat.answer,
+                  },
+                ]
+              : []),
+          ];
+        })
+        .flat();
+      const response = await fetch(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          method: "POST",
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are ChatGPT, a large language model trained by OpenAI.",
+              },
+              ...messages,
+            ],
+            stream: true,
+            max_tokens: 500,
+            // temperature: 0.7,
+            // top_p: 1,
+            // frequency_penalty: 0,
+            // presence_penalty: 0,
+            // n: 1,
+          } as OpenAIStreamPayload),
+        }
+      );
       data = response.body;
       if (!response.ok || !data) {
         setChat(index, () => ({
@@ -80,20 +137,38 @@ const Home: NextPage = () => {
       return;
     }
 
+    scrollListIntoView();
     const reader = data.getReader();
     const decoder = new TextDecoder();
-    let done = false;
-    scrollListIntoView();
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunkValue = decoder.decode(value);
-      setChat(index, (chat: Chat) => ({
-        answer: `${chat.answer}${chunkValue}`,
-      }));
-    }
+    let chunk = "";
+
+    await reader.read().then(function processResult(result) {
+      chunk += decoder.decode(result.value, { stream: true });
+
+      const dataObjects = chunk.split("\n").filter(Boolean);
+      // Process latest data object
+      const latestData = dataObjects[dataObjects.length - 1]?.replace(
+        /^data: /,
+        ""
+      );
+      if (latestData === "[DONE]") {
+        reader.cancel();
+        return;
+      }
+      const jsonData = JSON.parse(latestData || "{}");
+      if (jsonData.choices) {
+        const content = jsonData.choices[0].delta.content;
+
+        setChat(index, (chat: Chat) => ({
+          answer: `${chat.answer}${content}`,
+        }));
+      }
+      // Continue streaming responses
+      reader.read().then(processResult);
+    });
     scrollListIntoView();
   };
+
   return (
     <>
       <Head>
@@ -119,28 +194,67 @@ const Home: NextPage = () => {
               >
                 {msg.question}
               </UserMessage>
-              <BotMessage className="pr-12">
-                {msg.answer || msg.error}
+              <BotMessage className="pr-12" error={msg.error}>
+                {msg.answer}
               </BotMessage>
             </div>
           ))}
         </section>
-        <div className="fixed bottom-0 flex w-full max-w-3xl items-start gap-2 border-t bg-white/75 py-6 backdrop-blur-md">
-          <TextArea
-            name="chat"
-            placeholder="Ask anything. (Press Shift + Enter to send)"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && e.shiftKey) {
-                handleClickSend();
+        <div className="fixed bottom-0 flex w-full  max-w-3xl flex-col gap-2 border-t bg-white/75 py-6 backdrop-blur-md">
+          <div className="flex items-start gap-2">
+            <TextArea
+              name="chat"
+              placeholder={
+                apiKey
+                  ? "Ask anything. (Press Shift + Enter to send)"
+                  : "Enter your OpenAI API key to start."
               }
-            }}
-            className="min-h-[4em]"
-          />
-          <Button size="sm" variant="ghost" onClick={handleClickSend}>
-            <Send size={22} />
-          </Button>
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (input && e.key === "Enter" && e.shiftKey) {
+                  handleClickSend();
+                }
+              }}
+              className="min-h-[4em]"
+            />
+            <Button
+              variant="subtle"
+              onClick={handleClickSend}
+              disabled={!input}
+            >
+              {apiKey ? <Send size={20} /> : "Save"}
+            </Button>
+          </div>
+          <div className="flex gap-2">
+            {apiKey ? (
+              <>
+                <Button size="sm" variant="ghost" onClick={() => setApiKey("")}>
+                  Reset API key
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setChatList([])}
+                >
+                  Clear chat history
+                </Button>
+              </>
+            ) : (
+              <>
+                <TypographySubtle>
+                  You key stays on your device, never sent to our servers.
+                </TypographySubtle>
+                <Link
+                  href="https://platform.openai.com/account/api-keys"
+                  className="text-sm text-primary-700 underline"
+                  target="_blank"
+                >
+                  Get your API key on OpenAI dashboard
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </main>
     </>

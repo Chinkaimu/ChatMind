@@ -8,7 +8,7 @@ const config = {
   theme: {
     extend: {
       colors: {
-        primary: colors.fuchsia,
+        primary: colors.slate,
       },
       fontFamily: {
         sans: ['var(--font-inter)', ...fontFamily.sans],

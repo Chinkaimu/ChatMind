@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 import { Inter } from "next/font/google";
 import "~/styles/globals.css";
+import { Toaster } from '../components';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +18,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
       <ClerkProvider {...pageProps}>
         <Component {...pageProps} />
       </ClerkProvider>
+      <Toaster />
     </>
   );
 };
