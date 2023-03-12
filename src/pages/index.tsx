@@ -14,13 +14,14 @@ import {
   TypographySubtle,
   useToast,
 } from "../components";
-import { type OpenAIStreamPayload, type Chat } from "../types";
+import { type OpenAIStreamPayload, type Chat, ChatGPTMessage } from "../types";
 import Link from "next/link";
 import {
   createParser,
   ParsedEvent,
   ReconnectInterval,
 } from "eventsource-parser";
+import { chatGPTStream } from "../utils/stream";
 
 const Home: NextPage = () => {
   const { user } = useUser();
@@ -74,98 +75,58 @@ const Home: NextPage = () => {
     };
     setChatList((prev) => [...prev, newChat]);
     scrollListIntoView();
-    let data: ReadableStream<Uint8Array> | null;
+    let data: ReadableStream<any> | null;
     try {
-      const messages = [...chatList.slice(-5), newChat]
+      const messages: ChatGPTMessage[] = [...chatList.slice(-5), newChat]
         .map((chat) => {
           return [
             {
               role: "user",
               content: chat.question,
-            },
+            } as const,
             ...(chat.answer
               ? [
                   {
                     role: "assistant",
                     content: chat.answer,
-                  },
+                  } as const,
                 ]
               : []),
           ];
         })
         .flat();
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
+      data = await chatGPTStream(apiKey, {
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are ChatGPT, a large language model trained by OpenAI.",
           },
-          method: "POST",
-          body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: [
-              {
-                role: "system",
-                content:
-                  "You are ChatGPT, a large language model trained by OpenAI.",
-              },
-              ...messages,
-            ],
-            stream: true,
-            max_tokens: 500,
-            // temperature: 0.7,
-            // top_p: 1,
-            // frequency_penalty: 0,
-            // presence_penalty: 0,
-            // n: 1,
-          } as OpenAIStreamPayload),
-        }
-      );
-      data = response.body;
-      if (!response.ok || !data) {
+          ...messages,
+        ],
+      });
+    } catch (err) {
+      if (err instanceof Error) {
         setChat(index, () => ({
-          error:
-            "Sorry, An error occurred. If this issue persists please contact Open AI through help center at help.openai.com.",
+          // @ts-expect-error
+          error: err.message || "Sorry, Open AI is not available",
         }));
-        return;
       }
-    } catch (error) {
-      setChat(index, () => ({
-        error: "Sorry, Open AI is not available",
-      }));
       return;
     }
 
-    scrollListIntoView();
     const reader = data.getReader();
     const decoder = new TextDecoder();
-
-    await reader.read().then(function processResult(result) {
-      const chunk = decoder.decode(result.value, { stream: true });
-      console.log({ chunk });
-
-      const dataObjects = chunk.split("\n").filter(Boolean);
-      // Process latest data object
-      const latestData = dataObjects[dataObjects.length - 1]?.replace(
-        /^data: /,
-        ""
-      );
-      if (latestData === "[DONE]") {
-        reader.cancel();
-        return;
-      }
-      const jsonData = JSON.parse(latestData || "{}");
-      if (jsonData.choices) {
-        const content = jsonData.choices[0].delta.content;
-
-        setChat(index, (chat: Chat) => ({
-          answer: `${chat.answer}${content}`,
-        }));
-      }
-      // Continue streaming responses
-      reader.read().then(processResult);
-    });
+    let done = false;
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      const chunkValue = decoder.decode(value);
+      setChat(index, (chat: Chat) => ({
+        answer: `${chat.answer}${chunkValue}`,
+      }));
+      scrollListIntoView();
+    }
     scrollListIntoView();
   };
 
