@@ -152,7 +152,7 @@ const Home: NextPage = () => {
       </Head>
       <div className="flex h-full">
         <Sidebar />
-        <div className="w-full relative">
+        <div className="relative w-full">
           <Header />
           <main className="mx-auto h-[calc(100%-54px)] max-w-3xl px-3">
             <section
@@ -183,18 +183,20 @@ const Home: NextPage = () => {
                   name="chat"
                   placeholder={
                     apiKey
-                      ? "Ask anything. (Press Shift + Enter to send)"
+                      ? "Ask anything. (Press Shift + Enter to insert a new line)"
                       : "Enter your OpenAI API key to start."
                   }
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => {
-                    if (input && e.key === "Enter" && e.shiftKey) {
+                    if (input && e.key === "Enter" && !e.shiftKey) {
                       handleClickSend();
                       e.preventDefault();
+                    } else if (e.key === "Enter" && e.shiftKey) {
+                      setInput((prev) => `${prev}\n`);
                     }
                   }}
-                  className="min-h-[4em]"
+                  className="min-h-[6em]"
                 />
                 <Button
                   variant="subtle"

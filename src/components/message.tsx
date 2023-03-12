@@ -2,7 +2,6 @@ import * as React from "react";
 import clsx from "clsx";
 import { Avatar, AvatarImage } from "./avatar";
 import { TypographyP, TypographySubtle } from "./typograph";
-import { MessageSquare } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -28,9 +27,11 @@ export const UserMessage = React.memo(function UserMessageInner(
         </TypographyP>
         <TypographySubtle>{dayjs(props.date).fromNow()}</TypographySubtle>
       </div>
-      <Avatar>
-        <AvatarImage src={props.avatarUrl || ""} />
-      </Avatar>
+      {props.avatarUrl && (
+        <Avatar>
+          <AvatarImage src={props.avatarUrl || ""} />
+        </Avatar>
+      )}
     </section>
   );
 });
