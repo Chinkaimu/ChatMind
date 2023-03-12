@@ -140,10 +140,10 @@ const Home: NextPage = () => {
     scrollListIntoView();
     const reader = data.getReader();
     const decoder = new TextDecoder();
-    let chunk = "";
 
     await reader.read().then(function processResult(result) {
-      chunk += decoder.decode(result.value, { stream: true });
+      const chunk = decoder.decode(result.value, { stream: true });
+      console.log({ chunk });
 
       const dataObjects = chunk.split("\n").filter(Boolean);
       // Process latest data object
@@ -214,6 +214,7 @@ const Home: NextPage = () => {
               onKeyDown={(e) => {
                 if (input && e.key === "Enter" && e.shiftKey) {
                   handleClickSend();
+                  e.preventDefault();
                 }
               }}
               className="min-h-[4em]"
