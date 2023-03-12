@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import React from "react";
@@ -12,12 +12,13 @@ import {
   BotMessage,
   UserMessage,
   useToast,
+  TypographySubtle,
 } from "../components";
 import { type Chat, type ChatGPTMessage } from "../types";
 import Link from "next/link";
 
 const Home: NextPage = () => {
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   const [input, setInput] = useLocalStorage("chatmind.input", "");
   const [chatList, setChatList] = useLocalStorage<Chat[]>(
     "chatmind.chat-list",
@@ -137,7 +138,7 @@ const Home: NextPage = () => {
       return;
     }
   };
-
+  const clerk = useClerk();
   return (
     <>
       <Head>
@@ -209,6 +210,18 @@ const Home: NextPage = () => {
                 >
                   Clear chat history
                 </Button>
+                <div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => clerk.openSignIn({})}
+                  >
+                    Sign in
+                  </Button>
+                  <TypographySubtle>
+                    to save your history cross devices
+                  </TypographySubtle>
+                </div>
               </>
             ) : (
               <>
