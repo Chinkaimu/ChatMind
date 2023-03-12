@@ -11,17 +11,10 @@ import {
   TextArea,
   BotMessage,
   UserMessage,
-  TypographySubtle,
   useToast,
 } from "../components";
-import { type OpenAIStreamPayload, type Chat, ChatGPTMessage } from "../types";
+import { type Chat, type ChatGPTMessage } from "../types";
 import Link from "next/link";
-import {
-  createParser,
-  ParsedEvent,
-  ReconnectInterval,
-} from "eventsource-parser";
-import { chatGPTStream } from "../utils/stream";
 
 const Home: NextPage = () => {
   const { user } = useUser();
@@ -75,7 +68,7 @@ const Home: NextPage = () => {
     };
     setChatList((prev) => [...prev, newChat]);
     scrollListIntoView();
-    let data: ReadableStream<any> | null;
+    let data: ReadableStream<Uint8Array>;
     try {
       const messages: ChatGPTMessage[] = [...chatList.slice(-5), newChat]
         .map((chat) => {
@@ -95,16 +88,40 @@ const Home: NextPage = () => {
           ];
         })
         .flat();
-      data = await chatGPTStream(apiKey, {
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are ChatGPT, a large language model trained by OpenAI.",
-          },
-          ...messages,
-        ],
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are ChatGPT, a large language model trained by OpenAI.",
+            },
+            ...messages,
+          ],
+          apiKey,
+        }),
       });
+      if (!response.body) {
+        throw new Error("Sorry, Open AI is not available");
+      }
+      data = response.body;
+      const reader = data.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        const chunkValue = decoder.decode(value);
+        setChat(index, (chat: Chat) => ({
+          answer: `${chat.answer}${chunkValue}`,
+        }));
+        scrollListIntoView();
+      }
+      scrollListIntoView();
     } catch (err) {
       if (err instanceof Error) {
         setChat(index, () => ({
@@ -114,20 +131,6 @@ const Home: NextPage = () => {
       }
       return;
     }
-
-    const reader = data.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunkValue = decoder.decode(value);
-      setChat(index, (chat: Chat) => ({
-        answer: `${chat.answer}${chunkValue}`,
-      }));
-      scrollListIntoView();
-    }
-    scrollListIntoView();
   };
 
   return (
@@ -204,9 +207,6 @@ const Home: NextPage = () => {
               </>
             ) : (
               <>
-                <TypographySubtle>
-                  You key stays on your device, never sent to our servers.
-                </TypographySubtle>
                 <Link
                   href="https://platform.openai.com/account/api-keys"
                   className="text-sm text-primary-700 underline"

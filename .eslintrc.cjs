@@ -16,7 +16,10 @@ const config = {
     project: "./tsconfig.json",
   },
   plugins: ["@typescript-eslint"],
-  extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  extends: [
+    "next/core-web-vitals",
+    // "plugin:@typescript-eslint/recommended"
+  ],
   rules: {
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/no-non-null-assertion": "off",

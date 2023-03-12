@@ -6,25 +6,23 @@
 import { type OpenAIStreamPayload } from "../../types";
 import { chatGPTStream } from "../../utils/stream";
 
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("Missing env var from OpenAI");
-}
-
 export const config = {
   runtime: "edge",
 };
 
-const chat = async (req: Request): Promise<Response> => {
-  const { prompt } = (await req.json()) as {
-    prompt?: string;
-  };
+type RequestBody = {
+  apiKey: string;
+} & Pick<OpenAIStreamPayload, "messages">;
 
-  if (!prompt) {
-    return new Response("No prompt in the request", { status: 400 });
+const chat = async (req: Request): Promise<Response> => {
+  const { apiKey, messages } = (await req.json()) as RequestBody;
+
+  if (!apiKey) {
+    return new Response("No API key", { status: 400 });
   }
   const payload: OpenAIStreamPayload = {
     model: "gpt-3.5-turbo",
-    messages: [{ role: "user", content: prompt }],
+    messages,
     temperature: 0.7,
     top_p: 1,
     frequency_penalty: 0,
@@ -34,7 +32,7 @@ const chat = async (req: Request): Promise<Response> => {
     n: 1,
   };
 
-  const stream = await chatGPTStream(process.env.OPENAI_API_KEY!, payload);
+  const stream = await chatGPTStream(apiKey, payload);
   return new Response(stream);
 };
 

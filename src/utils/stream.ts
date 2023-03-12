@@ -58,13 +58,13 @@ export async function chatGPTStream(
       // stream response (SSE) from OpenAI may be fragmented into multiple chunks
       // this ensures we properly read chunks and invoke an event for each SSE event stream
       const parser = createParser(onParse);
-      if (window !== undefined) {
+      if (typeof window !== 'undefined') {
         if (res.body) {
           const reader = res.body.getReader();
           for (;;) {
-            const { done, value: s } = await reader.read();
+            const { done, value } = await reader.read();
             if (done) break;
-            parser.feed(decoder.decode(s));
+            parser.feed(decoder.decode(value));
           }
         }
       } else {

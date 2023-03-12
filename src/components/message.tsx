@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { Avatar, AvatarImage } from "./avatar";
 import { TypographyP, TypographySubtle } from "./typograph";
 import { MessageSquare } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Spinner } from "./spinner";
@@ -15,7 +16,7 @@ export type UserMessageProps = {
   date: number;
   className?: string;
 };
-dayjs.extend(relativeTime);
+
 export const UserMessage = React.memo(function UserMessageInner(
   props: UserMessageProps
 ): JSX.Element {
@@ -35,7 +36,7 @@ export const UserMessage = React.memo(function UserMessageInner(
 });
 
 type BotMessageProps = {
-  children: React.ReactNode;
+  children: string;
   className?: string;
   error?: string;
 };
@@ -47,13 +48,20 @@ export function BotMessage(props: BotMessageProps) {
       </Avatar>
       <div className="">
         {props.error ? (
-          <p className="px-3.5 py-2.5 bg-red-100 text-red-600 rounded-r-lg rounded-b-lg border border-red-600" role="alert">
+          <p
+            className="rounded-r-lg rounded-b-lg border border-red-600 bg-red-100 px-3.5 py-2.5 text-red-600"
+            role="alert"
+          >
             {props.error}
           </p>
         ) : (
-          <TypographyP className="whitespace-pre-wrap rounded-r-lg rounded-b-lg border bg-gray-100 px-3.5 py-2.5">
-            {props.children || <Spinner />}
-          </TypographyP>
+          <div className="whitespace-pre-wrap rounded-r-lg rounded-b-lg border bg-gray-100 px-3.5 py-2.5">
+            {props.children ? (
+              <ReactMarkdown>{props.children}</ReactMarkdown>
+            ) : (
+              <Spinner />
+            )}
+          </div>
         )}
       </div>
     </section>
