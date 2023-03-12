@@ -147,7 +147,7 @@ const Home: NextPage = () => {
           name="description"
           content="Enhancing your ChatGPT experience with ChatMind."
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Header />
       <main className="mx-auto min-h-full max-w-3xl">
@@ -210,18 +210,20 @@ const Home: NextPage = () => {
                 >
                   Clear chat history
                 </Button>
-                <div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => clerk.openSignIn({})}
-                  >
-                    Sign in
-                  </Button>
-                  <TypographySubtle>
-                    to save your history cross devices
-                  </TypographySubtle>
-                </div>
+                {!isSignedIn && (
+                  <div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => clerk.openSignIn({})}
+                    >
+                      Sign in
+                    </Button>
+                    <TypographySubtle>
+                      to save your history cross devices
+                    </TypographySubtle>
+                  </div>
+                )}
               </>
             ) : (
               <>
