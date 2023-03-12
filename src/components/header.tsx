@@ -9,18 +9,19 @@ export type HeaderProps = {
 
 export function Header(props: HeaderProps): JSX.Element {
   return (
-    <header className="fixed top-0 z-10 w-full border-b bg-white/75 py-4 backdrop-blur-md">
-      <div className="mx-auto flex max-w-3xl items-center justify-between">
-        <Logo />
-        <div>
-          <SignedIn>
-            {/* Mount the UserButton component */}
-            <UserButton />
-          </SignedIn>
-          {/* Signed out users get sign in button */}
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
+    <header className="absolute top-0 left-0 z-10 w-full border-b bg-white/75 py-4 backdrop-blur-md">
+      <div className="mx-auto max-w-3xl">
+        <div className="flex items-center justify-end">
+          <div>
+            <SignedIn>
+              {/* Mount the UserButton component */}
+              <UserButton />
+            </SignedIn>
+            {/* Signed out users get sign in button */}
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+          </div>
         </div>
       </div>
     </header>

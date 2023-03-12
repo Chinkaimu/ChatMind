@@ -13,6 +13,7 @@ import {
   UserMessage,
   useToast,
   TypographySubtle,
+  Sidebar,
 } from "../components";
 import { type Chat, type ChatGPTMessage } from "../types";
 import Link from "next/link";
@@ -149,96 +150,108 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.svg" />
       </Head>
-      <Header />
-      <main className="mx-auto min-h-full max-w-3xl">
-        <section className="flex flex-col gap-3 py-40" ref={listRef}>
-          {chatList.map((msg) => (
-            <div
-              key={msg.createdAt + msg.answer}
-              className="flex flex-col gap-3"
+      <div className="flex h-full">
+        <Sidebar />
+        <div className="w-full relative">
+          <Header />
+          <main className="mx-auto h-[calc(100%-54px)] max-w-3xl px-3">
+            <section
+              className="flex h-full flex-col gap-3 overflow-y-auto py-40"
+              ref={listRef}
             >
-              <UserMessage
-                avatarUrl={user?.profileImageUrl}
-                date={msg.createdAt}
-                className="pl-12"
-              >
-                {msg.question}
-              </UserMessage>
-              <BotMessage className="pr-12" error={msg.error}>
-                {msg.answer}
-              </BotMessage>
-            </div>
-          ))}
-        </section>
-        <div className="fixed bottom-0 flex w-full  max-w-3xl flex-col gap-2 border-t bg-white/75 py-6 backdrop-blur-md">
-          <div className="flex items-start gap-2">
-            <TextArea
-              name="chat"
-              placeholder={
-                apiKey
-                  ? "Ask anything. (Press Shift + Enter to send)"
-                  : "Enter your OpenAI API key to start."
-              }
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (input && e.key === "Enter" && e.shiftKey) {
-                  handleClickSend();
-                  e.preventDefault();
-                }
-              }}
-              className="min-h-[4em]"
-            />
-            <Button
-              variant="subtle"
-              onClick={handleClickSend}
-              disabled={!input}
-            >
-              {apiKey ? <Send size={20} /> : "Save"}
-            </Button>
-          </div>
-          <div className="flex gap-2">
-            {apiKey ? (
-              <>
-                <Button size="sm" variant="ghost" onClick={() => setApiKey("")}>
-                  Reset API key
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setChatList([])}
+              {chatList.map((msg) => (
+                <div
+                  key={msg.createdAt + msg.answer}
+                  className="flex flex-col gap-3"
                 >
-                  Clear chat history
+                  <UserMessage
+                    avatarUrl={user?.profileImageUrl}
+                    date={msg.createdAt}
+                    className="pl-12"
+                  >
+                    {msg.question}
+                  </UserMessage>
+                  <BotMessage className="pr-12" error={msg.error}>
+                    {msg.answer}
+                  </BotMessage>
+                </div>
+              ))}
+            </section>
+            <div className="fixed bottom-0 flex w-full  max-w-3xl flex-col gap-2 border-t bg-white/75 py-6 backdrop-blur-md">
+              <div className="flex items-start gap-2">
+                <TextArea
+                  name="chat"
+                  placeholder={
+                    apiKey
+                      ? "Ask anything. (Press Shift + Enter to send)"
+                      : "Enter your OpenAI API key to start."
+                  }
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (input && e.key === "Enter" && e.shiftKey) {
+                      handleClickSend();
+                      e.preventDefault();
+                    }
+                  }}
+                  className="min-h-[4em]"
+                />
+                <Button
+                  variant="subtle"
+                  onClick={handleClickSend}
+                  disabled={!input}
+                >
+                  {apiKey ? <Send size={20} /> : "Save"}
                 </Button>
-                {!isSignedIn && (
-                  <div>
+              </div>
+              <div className="flex gap-2">
+                {apiKey ? (
+                  <>
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => clerk.openSignIn({})}
+                      onClick={() => setApiKey("")}
                     >
-                      Sign in
+                      Reset API key
                     </Button>
-                    <TypographySubtle>
-                      to save your history cross devices
-                    </TypographySubtle>
-                  </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setChatList([])}
+                    >
+                      Clear chat history
+                    </Button>
+                    {!isSignedIn && (
+                      <div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => clerk.openSignIn({})}
+                        >
+                          Sign in
+                        </Button>
+                        <TypographySubtle>
+                          to save your history cross devices
+                        </TypographySubtle>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="https://platform.openai.com/account/api-keys"
+                      className="text-sm text-primary-700 underline"
+                      target="_blank"
+                    >
+                      Get your API key on OpenAI dashboard
+                    </Link>
+                  </>
                 )}
-              </>
-            ) : (
-              <>
-                <Link
-                  href="https://platform.openai.com/account/api-keys"
-                  className="text-sm text-primary-700 underline"
-                  target="_blank"
-                >
-                  Get your API key on OpenAI dashboard
-                </Link>
-              </>
-            )}
-          </div>
+              </div>
+            </div>
+          </main>
         </div>
-      </main>
+      </div>
     </>
   );
 };

@@ -5,3 +5,5 @@ export * from "./header";
 export * from "./spinner";
 export * from "./button";
 export * from "./toast";
+export * from "./logo";
+export * from "./sidebar";
