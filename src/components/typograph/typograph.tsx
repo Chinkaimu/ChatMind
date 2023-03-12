@@ -2,7 +2,7 @@ import clsx from "clsx";
 import * as React from "react";
 
 export type TypographyPProps = React.ComponentPropsWithoutRef<"p"> & {
-  as?: "pre"
+  as?: "pre";
 };
 
 export function TypographyP({ className, as, ...props }: TypographyPProps) {
@@ -11,7 +11,10 @@ export function TypographyP({ className, as, ...props }: TypographyPProps) {
     // @ts-expect-error
     <As
       {...props}
-      className={clsx("leading-7 [&:not(:first-child)]:mt-6 text-base", className)}
+      className={clsx(
+        "text-base leading-7 [&:not(:first-child)]:mt-6",
+        className
+      )}
     />
   );
 }
@@ -22,9 +25,6 @@ export function TypographySubtle({
   ...props
 }: TypographySubtleProps) {
   return (
-    <small
-      {...props}
-      className={clsx("text-sm text-slate-500 dark:text-slate-400", className)}
-    />
+    <small {...props} className={clsx("text-sm text-slate-500", className)} />
   );
 }
