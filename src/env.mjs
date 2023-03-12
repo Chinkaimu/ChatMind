@@ -5,7 +5,7 @@ import { z } from "zod";
  * built with invalid env vars.
  */
 const server = z.object({
-  DATABASE_URL: z.string().url(),
+  // DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   // OPENAI_API_KEY: z.string().min(48).startsWith("sk-"),
 });
@@ -25,7 +25,7 @@ const client = z.object({
  * @type {Record<keyof z.infer<typeof server> | keyof z.infer<typeof client>, string | undefined>}
  */
 const processEnv = {
-  DATABASE_URL: process.env.DATABASE_URL,
+  // DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
   // OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
