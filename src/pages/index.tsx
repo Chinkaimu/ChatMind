@@ -57,6 +57,11 @@ const Home: NextPage = () => {
       }
       setApiKey(input);
       setInput("");
+      toast({
+        title: "API key saved",
+        description:
+          "You API key has been saved in your browser, you can now chat with ChatGPT.",
+      });
       return;
     }
     const index = chatList.length;
