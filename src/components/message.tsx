@@ -56,7 +56,12 @@ export function BotMessage(props: BotMessageProps) {
             {props.error}
           </p>
         ) : (
-          <div className="prose prose-sm max-w-none whitespace-pre-wrap rounded-r-lg rounded-b-lg border bg-gray-100 px-3.5 py-2.5 prose-p:my-0 prose-ol:my-0 prose-ul:my-0 [&_*]:text-base">
+          <div
+            className={clsx(
+              "rounded-r-lg rounded-b-lg border bg-gray-100 px-3.5 py-2.5",
+              "prose max-w-none"
+            )}
+          >
             {props.children ? (
               <ReactMarkdown>{props.children}</ReactMarkdown>
             ) : (
