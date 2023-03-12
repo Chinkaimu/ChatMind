@@ -11,7 +11,7 @@ export function TypographyP({ className, as, ...props }: TypographyPProps) {
     // @ts-expect-error
     <As
       {...props}
-      className={clsx("leading-7 [&:not(:first-child)]:mt-6", className)}
+      className={clsx("leading-7 [&:not(:first-child)]:mt-6 text-base", className)}
     />
   );
 }

@@ -27,10 +27,8 @@ const Home: NextPage = () => {
   );
   const listRef = React.useRef<HTMLElement>(null);
   const scrollListIntoView = () => {
-    listRef.current?.scrollIntoView({
-      block: "end",
-      behavior: "smooth",
-    });
+    if (!listRef.current) return;
+    listRef.current.scrollTop = listRef.current.scrollHeight;
   };
   const setChat = (index: number, getChat: (chat: Chat) => Partial<Chat>) => {
     setChatList((prev) => {
@@ -74,7 +72,6 @@ const Home: NextPage = () => {
       createdAt: Date.now(),
     };
     setChatList((prev) => [...prev, newChat]);
-    scrollListIntoView();
     let data: ReadableStream<Uint8Array>;
     try {
       const messages: ChatGPTMessage[] = [...chatList.slice(-5), newChat]
@@ -120,15 +117,14 @@ const Home: NextPage = () => {
       const decoder = new TextDecoder();
       let done = false;
       while (!done) {
+        scrollListIntoView();
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
         const chunkValue = decoder.decode(value);
         setChat(index, (chat: Chat) => ({
           answer: `${chat.answer}${chunkValue}`,
         }));
-        scrollListIntoView();
       }
-      scrollListIntoView();
     } catch (err) {
       if (err instanceof Error) {
         setChat(index, () => ({
@@ -139,6 +135,9 @@ const Home: NextPage = () => {
       return;
     }
   };
+  React.useEffect(() => {
+    scrollListIntoView();
+  }, [chatList.length]);
   const clerk = useClerk();
   return (
     <>
