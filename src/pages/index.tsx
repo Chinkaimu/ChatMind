@@ -159,6 +159,23 @@ const Home: NextPage = () => {
               className="flex h-full flex-col gap-3 overflow-y-auto py-40"
               ref={listRef}
             >
+              <div className="flex flex-col gap-2">
+                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+                  👋 Welcome to ChatMind
+                </h1>
+                <div className="flex flex-col">
+                  <p className="leading-7 [&:not(:first-child)]:mt-6">
+                    Paste your OpenAI API key to start chatting with ChatGPT.
+                  </p>
+                  <Link
+                    href="https://platform.openai.com/account/api-keys"
+                    className="text-sm text-primary-700 underline"
+                    target="_blank"
+                  >
+                    Get your API key on OpenAI dashboard
+                  </Link>
+                </div>
+              </div>
               {chatList.map((msg) => (
                 <div
                   key={msg.createdAt + msg.answer}
@@ -207,7 +224,7 @@ const Home: NextPage = () => {
                 </Button>
               </div>
               <div className="flex gap-2">
-                {apiKey ? (
+                {apiKey && (
                   <>
                     <Button
                       size="sm"
@@ -237,16 +254,6 @@ const Home: NextPage = () => {
                         </TypographySubtle>
                       </div>
                     )}
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="https://platform.openai.com/account/api-keys"
-                      className="text-sm text-primary-700 underline"
-                      target="_blank"
-                    >
-                      Get your API key on OpenAI dashboard
-                    </Link>
                   </>
                 )}
               </div>
