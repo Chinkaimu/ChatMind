@@ -4,7 +4,7 @@ import Head from "next/head";
 import React from "react";
 import { Send } from "lucide-react";
 
-import { useLocalStorage } from "usehooks-ts";
+import { useLocalStorage } from "../hooks/use-local-storage";
 import {
   Header,
   Button,
@@ -15,23 +15,25 @@ import {
   TypographySubtle,
   Sidebar,
 } from "../components";
-import { type Chat, type ChatGPTMessage } from "../types";
+import { type ChatMessage, type ChatGPTMessage } from "../types";
 import Link from "next/link";
+import { useChatList } from "../hooks/use-chat";
+import { useIsMounted } from 'usehooks-ts';
 
 const Home: NextPage = () => {
   const { user, isSignedIn } = useUser();
   const [input, setInput] = useLocalStorage("chatmind.input", "");
-  const [chatList, setChatList] = useLocalStorage<Chat[]>(
-    "chatmind.chat-list",
-    []
-  );
+  const { chatMessages, setChatMessages } = useChatList();
   const listRef = React.useRef<HTMLElement>(null);
   const scrollListIntoView = () => {
     if (!listRef.current) return;
     listRef.current.scrollTop = listRef.current.scrollHeight;
   };
-  const setChat = (index: number, getChat: (chat: Chat) => Partial<Chat>) => {
-    setChatList((prev) => {
+  const setChat = (
+    index: number,
+    getChat: (chat: ChatMessage) => Partial<ChatMessage>
+  ) => {
+    setChatMessages((prev) => {
       const newMessages = [...prev];
       if (newMessages[index]) {
         // @ts-ignore
@@ -45,6 +47,7 @@ const Home: NextPage = () => {
   };
   const [apiKey, setApiKey] = useLocalStorage("chatmind.api-key", "");
   const { toast } = useToast();
+  const isMounted = useIsMounted()
   const handleClickSend = async () => {
     if (!apiKey) {
       if (!input || !input.startsWith("sk-")) {
@@ -64,17 +67,17 @@ const Home: NextPage = () => {
       });
       return;
     }
-    const index = chatList.length;
+    const index = chatMessages.length;
     setInput("");
-    const newChat: Chat = {
+    const newChat: ChatMessage = {
       question: input,
       answer: "",
       createdAt: Date.now(),
     };
-    setChatList((prev) => [...prev, newChat]);
+    setChatMessages((prev) => [...prev, newChat]);
     let data: ReadableStream<Uint8Array>;
     try {
-      const messages: ChatGPTMessage[] = [...chatList.slice(-5), newChat]
+      const messages: ChatGPTMessage[] = [...chatMessages.slice(-5), newChat]
         .map((chat) => {
           return [
             {
@@ -92,6 +95,14 @@ const Home: NextPage = () => {
           ];
         })
         .flat();
+      let isLoaded = false;
+      setTimeout(() => {
+        if (!isLoaded && isMounted()) {
+          setChat(index, () => ({
+            error: "Time out",
+          }));
+        }
+      }, 10_000);
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -109,6 +120,7 @@ const Home: NextPage = () => {
           apiKey,
         }),
       });
+      isLoaded = true;
       if (!response.body) {
         throw new Error("Sorry, Open AI is not available");
       }
@@ -121,11 +133,12 @@ const Home: NextPage = () => {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
         const chunkValue = decoder.decode(value);
-        setChat(index, (chat: Chat) => ({
+        setChat(index, (chat: ChatMessage) => ({
           answer: `${chat.answer}${chunkValue}`,
         }));
       }
     } catch (err) {
+      console.log("Chat request failed", err);
       if (err instanceof Error) {
         setChat(index, () => ({
           // @ts-expect-error
@@ -137,7 +150,8 @@ const Home: NextPage = () => {
   };
   React.useEffect(() => {
     scrollListIntoView();
-  }, [chatList.length]);
+  }, [chatMessages.length]);
+
   const clerk = useClerk();
   return (
     <>
@@ -168,14 +182,14 @@ const Home: NextPage = () => {
                   </p>
                   <Link
                     href="https://platform.openai.com/account/api-keys"
-                    className="text-sm text-primary-700 underline"
+                    className="text-sm text-gray-700 underline"
                     target="_blank"
                   >
                     Get your API key on OpenAI dashboard
                   </Link>
                 </div>
               </div>
-              {chatList.map((msg) => (
+              {chatMessages.map((msg) => (
                 <div
                   key={msg.createdAt + msg.answer}
                   className="flex flex-col gap-3"
@@ -183,7 +197,7 @@ const Home: NextPage = () => {
                   <UserMessage
                     avatarUrl={user?.profileImageUrl}
                     date={msg.createdAt}
-                    className="pl-12"
+                    className="pl-12 pr-1"
                   >
                     {msg.question}
                   </UserMessage>
@@ -235,7 +249,7 @@ const Home: NextPage = () => {
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => setChatList([])}
+                      onClick={() => setChatMessages([])}
                     >
                       Clear chat history
                     </Button>

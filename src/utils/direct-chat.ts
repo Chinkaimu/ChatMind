@@ -1,8 +1,8 @@
-import { type OpenAIStreamPayload, type Chat } from "../types";
+import { type OpenAIStreamPayload, type ChatMessage } from "../types";
 
 export async function directChat(
   apiKey: string,
-  chatList: Chat[],
+  chatList: ChatMessage[],
   systemPrompt = "You are ChatGPT, a large language model trained by OpenAI."
 ) {
   const messages = chatList

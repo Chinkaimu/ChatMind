@@ -1,0 +1,8 @@
+{
+  "tailwindCSS.experimental.classRegex": [
+    // string literals ending with styles/Styles
+    "[Ss]tyles[.\\s\\S]*=\\s*[\"'`]([^\"'`]*)[\"'`]",
+    // object
+    ["[sS]tyles[^=]*=\\s*([.\\s\\S]*)}", ":\\s*[\"'`]([^\"'`]*)[\"'`]"]
+  ],
+}

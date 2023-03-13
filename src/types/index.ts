@@ -1,4 +1,4 @@
-export type Chat = {
+export type ChatMessage = {
   question: string;
   answer: string;
   createdAt: number;

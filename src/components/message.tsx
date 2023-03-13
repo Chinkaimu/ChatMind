@@ -22,7 +22,7 @@ export const UserMessage = React.memo(function UserMessageInner(
   return (
     <section className={clsx("flex w-full justify-end gap-3", props.className)}>
       <div className="flex flex-col items-end">
-        <TypographyP className="rounded-l-lg rounded-b-lg border bg-primary-600 px-3.5 py-2.5 text-white">
+        <TypographyP className="rounded-l-lg rounded-b-lg border bg-gray-600 px-3.5 py-2.5 text-white">
           {props.children}
         </TypographyP>
         <TypographySubtle>{dayjs(props.date).fromNow()}</TypographySubtle>
