@@ -25,6 +25,6 @@ export function TypographySubtle({
   ...props
 }: TypographySubtleProps) {
   return (
-    <small {...props} className={clsx("text-sm text-slate-500", className)} />
+    <small {...props} className={clsx("text-sm text-gray-500", className)} />
   );
 }

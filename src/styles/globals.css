@@ -7,5 +7,5 @@ body,
 #__next {
   height: 100%;
   scroll-behavior: smooth;
-  @apply font-sans text-slate-900;
+  @apply font-sans text-gray-900;
 }
