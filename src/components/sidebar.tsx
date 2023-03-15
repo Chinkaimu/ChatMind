@@ -5,7 +5,8 @@ import { Plus } from "lucide-react";
 import { useChatList } from "../hooks/use-chat";
 
 export function Sidebar(): JSX.Element {
-  const { chatIdList, addChat, selectedChatId, selectChat } = useChatList();
+  const { chatIdList, addChat, selectedChatId, selectChat, chatMessages } =
+    useChatList();
   return (
     <nav className="h-full w-60 border-r py-3">
       <div className="flex flex-col gap-6">
@@ -37,7 +38,10 @@ type ConversationItemProps = {
 function ConversationItem(props: ConversationItemProps) {
   return (
     <li
-      className={clsx(itemStyles, props.selected && "bg-gray-600 text-white")}
+      className={clsx(
+        itemStyles,
+        props.selected && "bg-primary-600 text-white"
+      )}
     >
       <button
         onClick={props.onClick}
@@ -69,4 +73,4 @@ function NewChat(props: NewChatProps) {
 }
 
 const itemStyles =
-  "mx-2 rounded px-2.5 py-1.5 hover:bg-gray-500 hover:text-white transition";
+  "mx-2 rounded px-2.5 py-1.5 hover:bg-primary-500 hover:text-white transition";

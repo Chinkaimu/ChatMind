@@ -18,7 +18,7 @@ import {
 import { type ChatMessage, type ChatGPTMessage } from "../types";
 import Link from "next/link";
 import { useChatList } from "../hooks/use-chat";
-import { useIsMounted } from 'usehooks-ts';
+import { useIsMounted } from "usehooks-ts";
 
 const Home: NextPage = () => {
   const { user, isSignedIn } = useUser();
@@ -47,7 +47,7 @@ const Home: NextPage = () => {
   };
   const [apiKey, setApiKey] = useLocalStorage("chatmind.api-key", "");
   const { toast } = useToast();
-  const isMounted = useIsMounted()
+  const isMounted = useIsMounted();
   const handleClickSend = async () => {
     if (!apiKey) {
       if (!input || !input.startsWith("sk-")) {
@@ -99,7 +99,7 @@ const Home: NextPage = () => {
       setTimeout(() => {
         if (!isLoaded && isMounted()) {
           setChat(index, () => ({
-            error: "Time out",
+            error: "OpenAI request is time-out",
           }));
         }
       }, 10_000);
