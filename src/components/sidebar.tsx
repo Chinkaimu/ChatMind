@@ -2,11 +2,10 @@ import * as React from "react";
 import clsx from "clsx";
 import { Logo } from "./logo";
 import { Plus } from "lucide-react";
-import { useChatList } from "../hooks/use-chat";
+import { useChatMap } from "../hooks/use-chat";
 
 export function Sidebar(): JSX.Element {
-  const { chatIdList, addChat, selectedChatId, selectChat, chatMessages } =
-    useChatList();
+  const { chatMap, addChat, selectedId, selectChat } = useChatMap();
   return (
     <nav className="h-full w-60 border-r py-3">
       <div className="flex flex-col gap-6">
@@ -14,16 +13,18 @@ export function Sidebar(): JSX.Element {
           <Logo />
         </header>
         <ul className="flex flex-col gap-2">
-          {chatIdList.map((chatId) => (
+          {Object.entries(chatMap).map(([chatId, chat]) => (
             <ConversationItem
               onClick={() => selectChat(chatId)}
-              selected={chatId === selectedChatId}
+              selected={chatId === selectedId}
               key={chatId}
             >
-              {chatId}
+              {chat.title}
             </ConversationItem>
           ))}
-          <NewChat onClick={addChat} />
+          <NewChat
+            onClick={() => addChat(`Title ${Object.keys(chatMap).length + 1}`)}
+          />
         </ul>
       </div>
     </nav>

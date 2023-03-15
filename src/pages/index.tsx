@@ -15,39 +15,41 @@ import {
   TypographySubtle,
   Sidebar,
 } from "../components";
-import { type ChatMessage, type ChatGPTMessage } from "../types";
+import { type ChatMessage, type ChatGPTMessage, Chat } from "../types";
 import Link from "next/link";
-import { useChatList } from "../hooks/use-chat";
+import { useChatMap } from "../hooks/use-chat";
 import { useIsMounted } from "usehooks-ts";
 
 const Home: NextPage = () => {
   const { user, isSignedIn } = useUser();
   const [input, setInput] = useLocalStorage("chatmind.input", "");
-  const { chatMessages, setChatMessages } = useChatList();
   const listRef = React.useRef<HTMLElement>(null);
   const scrollListIntoView = () => {
     if (!listRef.current) return;
     listRef.current.scrollTop = listRef.current.scrollHeight;
   };
-  const setChat = (
+  const { selectedChat, setChat } = useChatMap();
+  const setMessage = (
     index: number,
-    getChat: (chat: ChatMessage) => Partial<ChatMessage>
+    getMessage: (message: ChatMessage) => Partial<ChatMessage>
   ) => {
-    setChatMessages((prev) => {
-      const newMessages = [...prev];
-      if (newMessages[index]) {
-        // @ts-ignore
-        newMessages[index] = {
-          ...newMessages[index],
-          ...getChat(newMessages[index]!),
-        };
-      }
-      return newMessages;
-    });
+    const newMessages: ChatMessage[] = [
+      ...(selectedChat?.messages || []),
+      
+    ];
+    const selectedMessage = selectedChat?.messages[index];
+    // @ts-ignore
+    newMessages[index] = {
+      ...newMessages[index],
+      ...(selectedMessage && getMessage(selectedMessage)),
+    }
+    
+    setChat(newMessages);
   };
   const [apiKey, setApiKey] = useLocalStorage("chatmind.api-key", "");
   const { toast } = useToast();
   const isMounted = useIsMounted();
+  const selectedMessages = selectedChat?.messages || [];
   const handleClickSend = async () => {
     if (!apiKey) {
       if (!input || !input.startsWith("sk-")) {
@@ -67,17 +69,17 @@ const Home: NextPage = () => {
       });
       return;
     }
-    const index = chatMessages.length;
+    const index = selectedMessages.length || 0;
     setInput("");
     const newChat: ChatMessage = {
       question: input,
       answer: "",
       createdAt: Date.now(),
     };
-    setChatMessages((prev) => [...prev, newChat]);
+    setChat([...selectedMessages, newChat]);
     let data: ReadableStream<Uint8Array>;
     try {
-      const messages: ChatGPTMessage[] = [...chatMessages.slice(-5), newChat]
+      const messages: ChatGPTMessage[] = [...selectedMessages.slice(-5), newChat]
         .map((chat) => {
           return [
             {
@@ -98,7 +100,7 @@ const Home: NextPage = () => {
       let isLoaded = false;
       setTimeout(() => {
         if (!isLoaded && isMounted()) {
-          setChat(index, () => ({
+          setMessage(index, () => ({
             error: "OpenAI request is time-out",
           }));
         }
@@ -133,14 +135,14 @@ const Home: NextPage = () => {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
         const chunkValue = decoder.decode(value);
-        setChat(index, (chat: ChatMessage) => ({
+        setMessage(index, (chat: ChatMessage) => ({
           answer: `${chat.answer}${chunkValue}`,
         }));
       }
     } catch (err) {
       console.log("Chat request failed", err);
       if (err instanceof Error) {
-        setChat(index, () => ({
+        setMessage(index, () => ({
           // @ts-expect-error
           error: err.message || "Sorry, Open AI is not available",
         }));
@@ -150,7 +152,7 @@ const Home: NextPage = () => {
   };
   React.useEffect(() => {
     scrollListIntoView();
-  }, [chatMessages.length]);
+  }, [selectedMessages.length]);
 
   const clerk = useClerk();
   return (
@@ -189,7 +191,7 @@ const Home: NextPage = () => {
                   </Link>
                 </div>
               </div>
-              {chatMessages.map((msg) => (
+              {selectedMessages.map((msg) => (
                 <div
                   key={msg.createdAt + msg.answer}
                   className="flex flex-col gap-3"
@@ -249,7 +251,7 @@ const Home: NextPage = () => {
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => setChatMessages([])}
+                      onClick={() => setChat([])}
                     >
                       Clear chat history
                     </Button>

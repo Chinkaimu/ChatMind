@@ -1,3 +1,11 @@
+export type Chat = {
+  id: string;
+  title: string;
+  messages: ChatMessage[];
+}
+
+export type ChatMap = Record<string, Chat>;
+
 export type ChatMessage = {
   question: string;
   answer: string;

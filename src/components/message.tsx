@@ -91,8 +91,8 @@ function BotImage() {
           y2="22.2354"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#145EF0" />
-          <stop offset="1" stop-color="#05ADD4" />
+          <stop stopColor="#145EF0" />
+          <stop offset="1" stopColor="#05ADD4" />
         </linearGradient>
       </defs>
     </svg>
