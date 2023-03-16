@@ -9,3 +9,11 @@ body,
   scroll-behavior: smooth;
   @apply font-sans text-gray-900;
 }
+
+*:focus {
+  outline: transparent;
+}
+
+[cmdk-overlay][data-state='open'] {
+  @apply fixed inset-0 animate-opacity bg-gray-500/75 z-10;
+}

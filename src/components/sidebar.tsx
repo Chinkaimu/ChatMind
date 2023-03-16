@@ -1,77 +1,61 @@
 import * as React from "react";
 import clsx from "clsx";
 import { Logo } from "./logo";
-import { Plus } from "lucide-react";
+import { Eraser, Plus } from "lucide-react";
 import { useChatMap } from "../hooks/use-chat";
+import { CommandMenu } from "./command-menu";
 
-export function Sidebar(): JSX.Element {
-  const { chatMap, addChat, selectedId, selectChat } = useChatMap();
+export type Action = {
+  name: string;
+  icon: React.ReactNode;
+  onSelect: () => void;
+};
+export type SidebarProps = {
+  actions: Action[];
+};
+
+export function Sidebar(props: SidebarProps): JSX.Element {
+  const { chatMap, addChat, selectChat, resetChatMap } = useChatMap();
   return (
     <nav className="h-full w-60 border-r py-3">
       <div className="flex flex-col gap-6">
         <header className="px-2.5">
           <Logo />
         </header>
-        <ul className="flex flex-col gap-2">
-          {Object.entries(chatMap).map(([chatId, chat]) => (
-            <ConversationItem
-              onClick={() => selectChat(chatId)}
-              selected={chatId === selectedId}
-              key={chatId}
+        <CommandMenu triggerClassName="mx-2">
+          <CommandMenu.Group heading="Chats">
+            {Object.entries(chatMap).map(([chatId, chat]) => (
+              <CommandMenu.Item
+                onSelect={() => selectChat(chatId)}
+                key={chatId}
+              >
+                {chat.title}
+              </CommandMenu.Item>
+            ))}
+            <CommandMenu.Item
+              onSelect={() =>
+                addChat(`Title ${Object.keys(chatMap).length + 1}`)
+              }
             >
-              {chat.title}
-            </ConversationItem>
-          ))}
-          <NewChat
-            onClick={() => addChat(`Title ${Object.keys(chatMap).length + 1}`)}
-          />
-        </ul>
+              <Plus size={20} />
+              <span>New chat</span>
+            </CommandMenu.Item>
+          </CommandMenu.Group>
+          <CommandMenu.Separator />
+          <CommandMenu.Group heading="Actions">
+            {props.actions.map((action) => (
+              <CommandMenu.Item onSelect={action.onSelect} key={action.name}>
+                {action.icon}
+                <span>{action.name}</span>
+              </CommandMenu.Item>
+            ))}
+            <CommandMenu.Item onSelect={resetChatMap}>
+              <Eraser size={18} />
+              <span>Clear all chats</span>
+            </CommandMenu.Item>
+          </CommandMenu.Group>
+        </CommandMenu>
       </div>
     </nav>
   );
 }
-
-type ConversationItemProps = {
-  children: React.ReactNode;
-  selected: boolean;
-  onClick: () => void;
-};
-function ConversationItem(props: ConversationItemProps) {
-  return (
-    <li
-      className={clsx(
-        itemStyles,
-        props.selected && "bg-primary-600 text-white"
-      )}
-    >
-      <button
-        onClick={props.onClick}
-        type="button"
-        className="w-full text-left"
-      >
-        {props.children}
-      </button>
-    </li>
-  );
-}
-
-type NewChatProps = {
-  onClick: () => void;
-};
-function NewChat(props: NewChatProps) {
-  return (
-    <li className={clsx(itemStyles, "border border-gray-500")}>
-      <button
-        onClick={props.onClick}
-        type="button"
-        className={clsx("flex w-full items-center gap-1 text-left")}
-      >
-        <Plus size={20} />
-        <span>New chat</span>
-      </button>
-    </li>
-  );
-}
-
-const itemStyles =
-  "mx-2 rounded px-2.5 py-1.5 hover:bg-primary-500 hover:text-white transition";

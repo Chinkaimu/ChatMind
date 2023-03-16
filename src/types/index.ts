@@ -31,3 +31,5 @@ export interface OpenAIStreamPayload {
   stream: boolean;
   n: number;
 }
+
+export type Noop = () => void;

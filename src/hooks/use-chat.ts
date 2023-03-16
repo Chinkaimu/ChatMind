@@ -42,16 +42,19 @@ export function useChatMap() {
     [chatMap, selectedId, setChatMap]
   );
   const addChat = useCallback(
-    (title: string) => {
+    (title?: string) => {
       const id = getRandomChatId();
-      setChatMap((prev) => ({
-        ...prev,
-        [id]: {
-          id,
-          title,
-          messages: [],
-        },
-      }));
+      setChatMap((prev) => {
+        const _title = title || `Chat ${Object.keys(prev).length + 1}`;
+        return {
+          ...prev,
+          [id]: {
+            id,
+            title: _title,
+            messages: [],
+          },
+        };
+      });
       setSelectedChat(id);
     },
     [setChatMap, setSelectedChat]
@@ -72,16 +75,20 @@ export function useChatMap() {
       },
     }));
   }, [selectedId, setChatMap]);
+  const resetChatMap = useCallback(() => {
+    setChatMap({});
+  }, [setChatMap]);
   useEffect(() => {
     if (!selectedId) {
-      addChat(`Chat ${Object.keys(chatMap).length + 1}`);
+      addChat();
     }
-  }, [selectedId, addChat, chatMap]);
+  }, [selectedId, addChat]);
   return {
     selectedId,
     selectedChat: chatMap[selectedId],
     updateCurrentChat,
     resetMessages,
+    resetChatMap,
     addChat,
     chatMap,
     selectChat,
