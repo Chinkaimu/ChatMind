@@ -58,7 +58,7 @@ export function CommandMenu({
         )}
       >
         <Input />
-        <Command.List className="h-[30vh] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400/75">
+        <Command.List className="h-[30vh] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400/60">
           <Command.Empty className="py-3 px-[18px]">
             No results found.
           </Command.Empty>
@@ -89,17 +89,22 @@ function Group(props: React.ComponentProps<typeof Command.Group>): JSX.Element {
 function Item({
   href,
   onSelect,
+  destructive,
   ...props
 }: React.ComponentProps<typeof Command.Item> & {
   href?: string;
   onSelect?: () => void;
+  destructive?: boolean;
 }): JSX.Element {
   const router = useRouter();
   return (
     <Command.Item
       {...props}
       className={clsx(
-        "mx-2 flex items-center gap-2 rounded-lg py-3 px-[10px] transition aria-selected:bg-primary-200/40 aria-selected:text-primary-700 hover:cursor-pointer",
+        "mx-2 flex items-center gap-2 rounded-lg py-3 px-[10px] transition text-base hover:cursor-pointer",
+        destructive
+          ? "aria-selected:bg-red-200/50 aria-selected:text-red-700"
+          : "aria-selected:bg-primary-200/40 aria-selected:text-primary-700",
         props.className
       )}
       onSelect={() => {

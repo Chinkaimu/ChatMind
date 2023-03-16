@@ -157,11 +157,13 @@ const Home: NextPage = () => {
               name: "Reset API key",
               icon: <Trash size={16} />,
               onSelect: () => setApiKey(""),
+              destructive: true,
             },
             {
               name: "Clear this chat",
               icon: <ListX size={16} />,
               onSelect: () => resetMessages(),
+              destructive: true,
             },
           ]}
         />

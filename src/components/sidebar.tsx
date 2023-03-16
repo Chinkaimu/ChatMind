@@ -9,6 +9,7 @@ export type Action = {
   name: string;
   icon: React.ReactNode;
   onSelect: () => void;
+  destructive?: boolean;
 };
 export type SidebarProps = {
   actions: Action[];
@@ -33,6 +34,7 @@ export function Sidebar(props: SidebarProps): JSX.Element {
               </CommandMenu.Item>
             ))}
             <CommandMenu.Item
+              key="new chat"
               onSelect={() =>
                 addChat(`Title ${Object.keys(chatMap).length + 1}`)
               }
@@ -44,15 +46,25 @@ export function Sidebar(props: SidebarProps): JSX.Element {
           <CommandMenu.Separator />
           <CommandMenu.Group heading="Actions">
             {props.actions.map((action) => (
-              <CommandMenu.Item onSelect={action.onSelect} key={action.name}>
+              <CommandMenu.Item
+                onSelect={action.onSelect}
+                key={action.name}
+                destructive={action.destructive}
+              >
                 {action.icon}
                 <span>{action.name}</span>
               </CommandMenu.Item>
             ))}
-            <CommandMenu.Item onSelect={resetChatMap}>
-              <Eraser size={18} />
-              <span>Clear all chats</span>
-            </CommandMenu.Item>
+            {Object.keys(chatMap).length > 1 && (
+              <CommandMenu.Item
+                onSelect={resetChatMap}
+                key="Clear all"
+                destructive
+              >
+                <Eraser size={18} />
+                <span>Clear all chats</span>
+              </CommandMenu.Item>
+            )}
           </CommandMenu.Group>
         </CommandMenu>
       </div>
