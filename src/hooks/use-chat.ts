@@ -1,11 +1,11 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { type ChatMap, type ChatMessage } from "../types";
 import { getRandomChatId } from "../utils/chat";
 import useLocalStorage from "./use-local-storage";
 
 export function useChatMap() {
   const initialId = useMemo(() => getRandomChatId(), []);
-  const [selectedId, setSelectedChat] = useLocalStorage(
+  const [selectedId, setSelectedChat] = useLocalStorage<keyof ChatMap>(
     "chatmind.selected-chat-id",
     initialId
   );
@@ -13,42 +13,77 @@ export function useChatMap() {
     "chatmind.chat-map",
     {}
   );
-  const setChat = useCallback(
-    (messages: ChatMessage[], title?: string) => {
+  const updateCurrentChat = useCallback(
+    (
+      index: number,
+      getMessage: (message?: Partial<ChatMessage>) => Partial<ChatMessage>,
+      title?: string
+    ) => {
+      setChatMap((prev) => {
+        const messages = [...(prev[selectedId]?.messages || [])];
+        // @ts-expect-error
+        messages[index] = {
+          ...messages[index],
+          ...getMessage(prev[selectedId]?.messages[index]),
+        };
+        return {
+          ...prev,
+          [selectedId]: {
+            id: selectedId,
+            title:
+              title ||
+              prev[selectedId]?.title ||
+              `Chat ${Object.keys(chatMap).length + 1}`,
+            messages,
+          },
+        };
+      });
+    },
+    [chatMap, selectedId, setChatMap]
+  );
+  const addChat = useCallback(
+    (title: string) => {
+      const id = getRandomChatId();
       setChatMap((prev) => ({
         ...prev,
-        [selectedId]: {
-          id: selectedId,
-          title: title || prev[selectedId]?.title || "Untitled",
-          messages,
+        [id]: {
+          id,
+          title,
+          messages: [],
         },
       }));
+      setSelectedChat(id);
     },
-    [selectedId, setChatMap]
+    [setChatMap, setSelectedChat]
   );
+  const selectChat = useCallback(
+    (id: string) => {
+      setSelectedChat(id);
+    },
+    [setSelectedChat]
+  );
+  const resetMessages = useCallback(() => {
+    // @ts-expect-error
+    setChatMap((prev) => ({
+      ...prev,
+      [selectedId]: {
+        ...prev[selectedId],
+        messages: [],
+      },
+    }));
+  }, [selectedId, setChatMap]);
+  useEffect(() => {
+    if (!selectedId) {
+      addChat(`Chat ${Object.keys(chatMap).length + 1}`);
+    }
+  }, [selectedId, addChat, chatMap]);
   return {
     selectedId,
     selectedChat: chatMap[selectedId],
-    setChat,
-    addChat: useCallback(
-      (title: string) => {
-        const id = getRandomChatId();
-        setChatMap((prev) => ({
-          ...prev,
-          [id]: {
-            id,
-            title,
-            messages: [],
-          },
-        }));
-        setSelectedChat(id);
-      },
-      [setChatMap, setSelectedChat]
-    ),
+    updateCurrentChat,
+    resetMessages,
+    addChat,
     chatMap,
-    selectChat: useCallback((id: string) => {
-      setSelectedChat(id);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []),
+    selectChat,
   };
 }

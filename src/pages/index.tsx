@@ -28,24 +28,7 @@ const Home: NextPage = () => {
     if (!listRef.current) return;
     listRef.current.scrollTop = listRef.current.scrollHeight;
   };
-  const { selectedChat, setChat } = useChatMap();
-  const setMessage = (
-    index: number,
-    getMessage: (message: ChatMessage) => Partial<ChatMessage>
-  ) => {
-    const newMessages: ChatMessage[] = [
-      ...(selectedChat?.messages || []),
-      
-    ];
-    const selectedMessage = selectedChat?.messages[index];
-    // @ts-ignore
-    newMessages[index] = {
-      ...newMessages[index],
-      ...(selectedMessage && getMessage(selectedMessage)),
-    }
-    
-    setChat(newMessages);
-  };
+  const { selectedChat, updateCurrentChat, resetMessages } = useChatMap();
   const [apiKey, setApiKey] = useLocalStorage("chatmind.api-key", "");
   const { toast } = useToast();
   const isMounted = useIsMounted();
@@ -69,17 +52,20 @@ const Home: NextPage = () => {
       });
       return;
     }
-    const index = selectedMessages.length || 0;
+    const index = selectedMessages.length;
     setInput("");
-    const newChat: ChatMessage = {
+    const newMessage: ChatMessage = {
       question: input,
       answer: "",
       createdAt: Date.now(),
     };
-    setChat([...selectedMessages, newChat]);
+    updateCurrentChat(index, () => newMessage);
     let data: ReadableStream<Uint8Array>;
     try {
-      const messages: ChatGPTMessage[] = [...selectedMessages.slice(-5), newChat]
+      const messages: ChatGPTMessage[] = [
+        ...selectedMessages.slice(-5),
+        newMessage,
+      ]
         .map((chat) => {
           return [
             {
@@ -100,7 +86,7 @@ const Home: NextPage = () => {
       let isLoaded = false;
       setTimeout(() => {
         if (!isLoaded && isMounted()) {
-          setMessage(index, () => ({
+          updateCurrentChat(index, () => ({
             error: "OpenAI request is time-out",
           }));
         }
@@ -135,14 +121,14 @@ const Home: NextPage = () => {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
         const chunkValue = decoder.decode(value);
-        setMessage(index, (chat: ChatMessage) => ({
-          answer: `${chat.answer}${chunkValue}`,
+        updateCurrentChat(index, (message) => ({
+          answer: `${message?.answer}${chunkValue}`,
         }));
       }
     } catch (err) {
       console.log("Chat request failed", err);
       if (err instanceof Error) {
-        setMessage(index, () => ({
+        updateCurrentChat(index, () => ({
           // @ts-expect-error
           error: err.message || "Sorry, Open AI is not available",
         }));
@@ -251,7 +237,7 @@ const Home: NextPage = () => {
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => setChat([])}
+                      onClick={() => resetMessages()}
                     >
                       Clear chat history
                     </Button>
