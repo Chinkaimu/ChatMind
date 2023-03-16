@@ -195,7 +195,7 @@ const Home: NextPage = () => {
                 </div>
               ))}
             </section>
-            <div className="fixed bottom-0 flex w-full  max-w-3xl flex-col gap-2 border-t bg-white/75 py-6 backdrop-blur-md">
+            <div className="fixed bottom-0 flex w-full  max-w-3xl flex-col gap-2 border-t bg-white/75 py-6 backdrop-blur-xl backdrop-saturate-150">
               <div className="flex items-start gap-2">
                 <TextArea
                   name="chat"
