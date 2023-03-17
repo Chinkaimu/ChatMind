@@ -101,7 +101,7 @@ function Item({
     <Command.Item
       {...props}
       className={clsx(
-        "mx-2 flex items-center gap-2 rounded-lg py-3 px-[10px] transition text-base hover:cursor-pointer",
+        "mx-2 flex items-center gap-2 rounded-lg py-3 px-[10px] transition text-sm hover:cursor-pointer",
         destructive
           ? "aria-selected:bg-red-200/50 aria-selected:text-red-700"
           : "aria-selected:bg-primary-200/40 aria-selected:text-primary-700",
