@@ -3,7 +3,7 @@ import { type ChatMap, type ChatMessage } from "../types";
 import { getRandomChatId } from "../utils/chat";
 import useLocalStorage from "./use-local-storage";
 
-export function useChatMap() {
+export function useChat() {
   const initialId = useMemo(() => getRandomChatId(), []);
   const [selectedId, setSelectedChat] = useLocalStorage<keyof ChatMap>(
     "chatmind.selected-chat-id",
@@ -83,6 +83,9 @@ export function useChatMap() {
       addChat();
     }
   }, [selectedId, addChat]);
+  
+  const [apiKey, setApiKey] = useLocalStorage("chatmind.api-key", "");
+
   return {
     selectedId,
     selectedChat: chatMap[selectedId],
@@ -92,5 +95,7 @@ export function useChatMap() {
     addChat,
     chatMap,
     selectChat,
+    apiKey,
+    setApiKey,
   };
 }

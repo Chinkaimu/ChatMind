@@ -13,11 +13,14 @@ import {
   UserMessage,
   useToast,
   Sidebar,
+  Paragraph,
+  Subtle,
 } from "../components";
 import { type ChatMessage, type ChatGPTMessage } from "../types";
 import Link from "next/link";
-import { useChatMap } from "../hooks/use-chat";
+import { useChat } from "../hooks/use-chat";
 import { useIsMounted } from "usehooks-ts";
+import { CommandShortCut } from "../components/command-menu";
 
 const Home: NextPage = () => {
   const { user } = useUser();
@@ -27,8 +30,8 @@ const Home: NextPage = () => {
     if (!listRef.current) return;
     listRef.current.scrollTop = listRef.current.scrollHeight;
   };
-  const { selectedChat, updateCurrentChat, resetMessages } = useChatMap();
-  const [apiKey, setApiKey] = useLocalStorage("chatmind.api-key", "");
+  const { selectedChat, updateCurrentChat, resetMessages, apiKey, setApiKey } =
+    useChat();
   const { toast } = useToast();
   const isMounted = useIsMounted();
   const selectedMessages = selectedChat?.messages || [];
@@ -151,22 +154,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.svg" />
       </Head>
       <div className="flex h-full">
-        <Sidebar
-          actions={[
-            {
-              name: "Reset API key",
-              icon: <Trash size={16} />,
-              onSelect: () => setApiKey(""),
-              destructive: true,
-            },
-            {
-              name: "Clear this chat",
-              icon: <ListX size={16} />,
-              onSelect: () => resetMessages(),
-              destructive: true,
-            },
-          ]}
-        />
+        <Sidebar />
         <div className="relative w-full">
           <Header />
           <main className="mx-auto h-[calc(100%-54px)] max-w-3xl px-3">
@@ -240,38 +228,12 @@ const Home: NextPage = () => {
                   {apiKey ? <Send size={20} /> : "Save"}
                 </Button>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 py-1">
                 {apiKey && (
-                  <>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setApiKey("")}
-                    >
-                      Reset API key
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => resetMessages()}
-                    >
-                      Clear chat history
-                    </Button>
-                    {/* {!isSignedIn && (
-                      <div>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => clerk.openSignIn({})}
-                        >
-                          Sign in
-                        </Button>
-                        <TypographySubtle>
-                          to save your history cross devices
-                        </TypographySubtle>
-                      </div>
-                    )} */}
-                  </>
+                  <Subtle className="flex">
+                    <span>Find more settings in command menu</span>
+                    <CommandShortCut />
+                  </Subtle>
                 )}
               </div>
             </div>

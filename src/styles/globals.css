@@ -14,6 +14,6 @@ body,
   outline: transparent;
 }
 
-[cmdk-overlay][data-state='open'] {
-  @apply fixed inset-0 animate-opacity bg-gray-500/75 z-10;
+[cmdk-overlay][data-state="open"] {
+  @apply fixed inset-0 z-10 animate-opacity bg-gray-200/75 backdrop-blur-sm backdrop-saturate-150;
 }

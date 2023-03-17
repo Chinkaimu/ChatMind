@@ -1,7 +1,7 @@
 import * as React from "react";
 import clsx from "clsx";
 import { Avatar, AvatarImage } from "./avatar";
-import { TypographyP, TypographySubtle } from "./typograph";
+import { Paragraph, Subtle } from "./typograph";
 import ReactMarkdown from "react-markdown";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -22,10 +22,10 @@ export const UserMessage = React.memo(function UserMessageInner(
   return (
     <section className={clsx("flex w-full justify-end gap-3", props.className)}>
       <div className="flex flex-col items-end">
-        <TypographyP className="rounded-l-lg rounded-b-lg border bg-primary-600 px-3.5 py-2.5 text-white">
+        <Paragraph className="rounded-l-lg rounded-b-lg border bg-primary-600 px-3.5 py-2.5 text-white">
           {props.children}
-        </TypographyP>
-        <TypographySubtle>{dayjs(props.date).fromNow()}</TypographySubtle>
+        </Paragraph>
+        <Subtle>{dayjs(props.date).fromNow()}</Subtle>
       </div>
       {props.avatarUrl && (
         <Avatar>
