@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useToast } from "../components/toast";
 import { type ChatMap, type ChatMessage } from "../types";
+import { api } from "../utils/api";
 import { getRandomChatId } from "../utils/chat";
 import useLocalStorage from "./use-local-storage";
 
@@ -94,7 +95,10 @@ export function useChat() {
     }
   }, [selectedId, addChat]);
 
-  const [apiKey, setApiKey] = useLocalStorage<string | null>("chatmind.api-key", "");
+  const [apiKey, setApiKey] = useLocalStorage<string | null>(
+    "chatmind.api-key",
+    ""
+  );
   const { toast } = useToast();
   const saveApiKey = useCallback(
     (input: string) => {
@@ -121,10 +125,38 @@ export function useChat() {
   const clearApiKey = useCallback(() => {
     setApiKey(null);
   }, [setApiKey]);
+  const selectedChat =
+    selectedId && selectedId in chatMap ? chatMap[selectedId] : null;
+  const { data } = api.chat.summary.useQuery(
+    {
+      apiKey: apiKey!,
+      messages: selectedChat?.messages!,
+    },
+    {
+      enabled: !!(apiKey && (selectedChat?.messages.length || 0 >= 4)),
+      onSuccess(data) {
+        if (!data) return;
+        // @ts-ignore
+        setChatMap((prev) => {
+          if (!(selectedId && selectedId in prev)) {
+            throw new Error(
+              `Selected id ${selectedId} is not found in chat map`
+            );
+          }
+          return {
+            ...prev,
+            [selectedId]: {
+              ...prev[selectedId],
+              title: data,
+            },
+          };
+        });
+      },
+    }
+  );
   return {
     selectedId,
-    selectedChat:
-      selectedId && selectedId in chatMap ? chatMap[selectedId] : null,
+    selectedChat,
     updateCurrentChat,
     clearCurrentChat,
     clearChatMap,

@@ -1,4 +1,3 @@
-import { useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import React from "react";
@@ -21,7 +20,6 @@ import { useIsMounted } from "usehooks-ts";
 import { CommandShortCut } from "../components/command-menu";
 
 const Home: NextPage = () => {
-  const { user } = useUser();
   const [input, setInput] = useLocalStorage("chatmind.input", "");
   const listRef = React.useRef<HTMLElement>(null);
   const scrollListIntoView = () => {
@@ -169,7 +167,7 @@ const Home: NextPage = () => {
                   className="flex flex-col gap-3"
                 >
                   <UserMessage
-                    avatarUrl={user?.profileImageUrl}
+                    // avatarUrl={user?.profileImageUrl}
                     date={msg.createdAt}
                     className="pl-12 pr-1"
                   >

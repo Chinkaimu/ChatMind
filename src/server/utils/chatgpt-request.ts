@@ -3,12 +3,14 @@ import {
   type ParsedEvent,
   type ReconnectInterval,
 } from "eventsource-parser";
-import { type OpenAIStreamPayload } from "../types";
+import { type OpenAIStreamPayload } from "../../types";
 
-export async function chatGPTStream(
+export type ChatGPTPayload = Omit<Partial<OpenAIStreamPayload>, "stream">;
+
+export async function fetchChatGPT(
   apiKey: string,
-  payload: Omit<Partial<OpenAIStreamPayload>, "stream">
-) {
+  payload: ChatGPTPayload
+): Promise<Response> {
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     headers: {
       "Content-Type": "application/json",
@@ -19,9 +21,13 @@ export async function chatGPTStream(
       max_tokens: 500,
       ...payload,
       model: "gpt-3.5-turbo",
-      stream: true,
     }),
   });
+  return res;
+}
+
+export async function chatGPTStream(apiKey: string, payload: ChatGPTPayload) {
+  const res = await fetchChatGPT(apiKey, payload);
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
@@ -58,7 +64,7 @@ export async function chatGPTStream(
       // stream response (SSE) from OpenAI may be fragmented into multiple chunks
       // this ensures we properly read chunks and invoke an event for each SSE event stream
       const parser = createParser(onParse);
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         if (res.body) {
           const reader = res.body.getReader();
           for (;;) {
