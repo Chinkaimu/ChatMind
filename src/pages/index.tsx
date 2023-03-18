@@ -2,7 +2,7 @@ import { useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import React from "react";
-import { ListX, Send, Trash } from "lucide-react";
+import { Send } from "lucide-react";
 
 import { useLocalStorage } from "../hooks/use-local-storage";
 import {
@@ -11,9 +11,7 @@ import {
   TextArea,
   BotMessage,
   UserMessage,
-  useToast,
   Sidebar,
-  Paragraph,
   Subtle,
 } from "../components";
 import { type ChatMessage, type ChatGPTMessage } from "../types";
@@ -30,29 +28,13 @@ const Home: NextPage = () => {
     if (!listRef.current) return;
     listRef.current.scrollTop = listRef.current.scrollHeight;
   };
-  const { selectedChat, updateCurrentChat, resetMessages, apiKey, setApiKey } =
-    useChat();
-  const { toast } = useToast();
+  const { selectedChat, updateCurrentChat, apiKey, updateApiKey } = useChat();
+
   const isMounted = useIsMounted();
   const selectedMessages = selectedChat?.messages || [];
   const handleClickSend = async () => {
     if (!apiKey) {
-      if (!input || !input.startsWith("sk-")) {
-        toast({
-          variant: "destructive",
-          title: "Invalid API Key",
-          description: "Please double check your API Key.",
-        });
-        return;
-      }
-      setApiKey(input);
-      setInput("");
-      toast({
-        title: "API key saved",
-        description:
-          "You API key has been saved in your browser, you can now chat with ChatGPT.",
-      });
-      return;
+      updateApiKey(input);
     }
     const index = selectedMessages.length;
     setInput("");
@@ -229,12 +211,10 @@ const Home: NextPage = () => {
                 </Button>
               </div>
               <div className="flex gap-2 py-1">
-                {apiKey && (
-                  <Subtle className="flex">
-                    <span>Find more settings in command menu</span>
-                    <CommandShortCut />
-                  </Subtle>
-                )}
+                <Subtle className="flex">
+                  <span>Find more settings in command menu</span>
+                  <CommandShortCut />
+                </Subtle>
               </div>
             </div>
           </main>

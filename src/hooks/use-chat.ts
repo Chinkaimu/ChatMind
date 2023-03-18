@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo } from "react";
+import { useToast } from "../components/toast";
 import { type ChatMap, type ChatMessage } from "../types";
 import { getRandomChatId } from "../utils/chat";
 import useLocalStorage from "./use-local-storage";
@@ -83,9 +84,28 @@ export function useChat() {
       addChat();
     }
   }, [selectedId, addChat]);
-  
-  const [apiKey, setApiKey] = useLocalStorage("chatmind.api-key", "");
 
+  const [apiKey, setApiKey] = useLocalStorage("chatmind.api-key", "");
+  const { toast } = useToast();
+  const updateApiKey = useCallback(
+    (input: string) => {
+      if (!input.startsWith("sk-")) {
+        toast({
+          variant: "destructive",
+          title: "Invalid API Key",
+          description: "Please double check your API Key.",
+        });
+        throw new Error(`Invalid API Key: ${input}`);
+      }
+      setApiKey(input);
+      toast({
+        title: "API key saved",
+        description:
+          "You API key has been saved in your browser, you can now chat with ChatGPT.",
+      });
+    },
+    [setApiKey, toast]
+  );
   return {
     selectedId,
     selectedChat: chatMap[selectedId],
@@ -96,6 +116,6 @@ export function useChat() {
     chatMap,
     selectChat,
     apiKey,
-    setApiKey,
+    updateApiKey,
   };
 }

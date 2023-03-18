@@ -2,12 +2,6 @@ import * as React from "react";
 import { Logo } from "./logo";
 import { CommandMenu } from "./command-menu";
 
-export type Action = {
-  name: string;
-  icon: React.ReactNode;
-  onSelect: () => void;
-  destructive?: boolean;
-};
 
 export function Sidebar(): JSX.Element {
   return (

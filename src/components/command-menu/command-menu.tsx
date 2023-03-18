@@ -4,11 +4,27 @@ import { Command } from "cmdk";
 import * as React from "react";
 
 import { useKeyPressEvent } from "../../hooks/use-key-press-event";
-import { Eraser, ListX, Plus, Search, Trash } from "lucide-react";
+import {
+  Clipboard,
+  Eraser,
+  Link,
+  ListX,
+  Plus,
+  Search,
+  Trash,
+} from "lucide-react";
 import { useChat } from "../../hooks/use-chat";
+import { Subtle } from "../typograph";
 
 export type CommandMenuProps = {
   triggerClassName?: string;
+};
+
+export type Action = {
+  name: string;
+  icon: React.ReactNode;
+  onSelect: () => void;
+  destructive?: boolean;
 };
 
 export function CommandMenu({
@@ -31,20 +47,39 @@ export function CommandMenu({
     resetMessages,
     selectedChat,
     apiKey,
-    setApiKey,
+    updateApiKey,
     selectChat,
   } = useChat();
-  const actions = [
+  const actions: Action[] = [
     ...(apiKey
       ? [
           {
             name: "Reset API key",
             icon: <Trash size={16} />,
-            onSelect: () => setApiKey(""),
+            onSelect: () => updateApiKey(""),
             destructive: true,
           },
         ]
-      : []),
+      : [
+          {
+            name: "Get your API key",
+            icon: <Link size={16} />,
+            onSelect: () => {
+              window.open(
+                "https://platform.openai.com/account/api-keys",
+                "_blank"
+              );
+            },
+          },
+          {
+            name: "Save API key from clipboard",
+            icon: <Clipboard size={16} />,
+            onSelect: async () => {
+              const text = await navigator.clipboard.readText();
+              updateApiKey(text);
+            },
+          },
+        ]),
     ...(selectedChat?.title
       ? [
           {
@@ -92,11 +127,15 @@ export function CommandMenu({
         )}
       >
         <Input />
-        <Command.List className="h-[30vh] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400/60">
+        <div className="py-2 px-[18px]">
+          <Subtle>{`Use arrow keys for navigation, enter key to confirm`}</Subtle>
+        </div>
+        {/* <CommandMenu.Separator /> */}
+        <Command.List className="h-[30vh] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300/60">
           <Command.Empty className="py-3 px-[18px]">
             No results found.
           </Command.Empty>
-          <CommandMenu.Group heading="Chats">
+          <CommandMenu.Group heading="Switch chat">
             {Object.entries(chatMap).map(([chatId, chat]) => (
               <CommandMenu.Item
                 onSelect={() => {
@@ -108,10 +147,12 @@ export function CommandMenu({
                 {chat.title}
               </CommandMenu.Item>
             ))}
-            <CommandMenu.Item key="new chat" onSelect={() => addChat()}>
-              <Plus size={20} />
-              <span>New chat</span>
-            </CommandMenu.Item>
+            {apiKey && (
+              <CommandMenu.Item key="new chat" onSelect={() => addChat()}>
+                <Plus size={20} />
+                <span>New chat</span>
+              </CommandMenu.Item>
+            )}
           </CommandMenu.Group>
           <CommandMenu.Separator />
           <CommandMenu.Group heading="Actions">
@@ -155,7 +196,7 @@ function Group(props: React.ComponentProps<typeof Command.Group>): JSX.Element {
     <Command.Group
       {...props}
       className={clsx(
-        "py-4 text-sm [&_[cmdk-group-heading]]:mb-2 [&_[cmdk-group-heading]]:px-[18px] [&_[cmdk-group-heading]]:text-gray-500",
+        "py-4 text-sm font-medium [&_[cmdk-group-heading]]:mb-2 [&_[cmdk-group-heading]]:px-[18px] [&_[cmdk-group-heading]]:text-gray-500",
         props.className
       )}
     />
