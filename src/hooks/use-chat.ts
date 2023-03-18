@@ -6,7 +6,7 @@ import useLocalStorage from "./use-local-storage";
 
 export function useChat() {
   const initialId = useMemo(() => getRandomChatId(), []);
-  const [selectedId, setSelectedChat] = useLocalStorage<keyof ChatMap>(
+  const [selectedId, setSelectedChat] = useLocalStorage<keyof ChatMap | null>(
     "chatmind.selected-chat-id",
     initialId
   );
@@ -14,6 +14,7 @@ export function useChat() {
     "chatmind.chat-map",
     {}
   );
+  const chatSize = Object.keys(chatMap).length;
   const updateCurrentChat = useCallback(
     (
       index: number,
@@ -21,6 +22,9 @@ export function useChat() {
       title?: string
     ) => {
       setChatMap((prev) => {
+        if (!selectedId) {
+          throw new Error(`No chat selected when updating current chat`);
+        }
         const messages = [...(prev[selectedId]?.messages || [])];
         // @ts-expect-error
         messages[index] = {
@@ -31,16 +35,13 @@ export function useChat() {
           ...prev,
           [selectedId]: {
             id: selectedId,
-            title:
-              title ||
-              prev[selectedId]?.title ||
-              `Chat ${Object.keys(chatMap).length + 1}`,
+            title: title || prev[selectedId]?.title || `Chat ${chatSize + 1}`,
             messages,
           },
         };
       });
     },
-    [chatMap, selectedId, setChatMap]
+    [chatSize, selectedId, setChatMap]
   );
   const addChat = useCallback(
     (title?: string) => {
@@ -66,28 +67,36 @@ export function useChat() {
     },
     [setSelectedChat]
   );
-  const resetMessages = useCallback(() => {
-    // @ts-expect-error
-    setChatMap((prev) => ({
-      ...prev,
-      [selectedId]: {
-        ...prev[selectedId],
-        messages: [],
-      },
-    }));
-  }, [selectedId, setChatMap]);
-  const resetChatMap = useCallback(() => {
+  const clearCurrentChat = useCallback(() => {
+    if (!selectedId) {
+      throw new Error(`No chat selected when resetting messages`);
+    }
+    let newId = null;
+    // @ts-ignore
+    setChatMap((prev) => {
+      const map = { ...prev };
+      if (!(selectedId in map)) {
+        throw new Error(`Selected id ${selectedId} is not found in chat map`);
+      }
+      delete map[selectedId];
+      newId = Object.keys(map)[0];
+      return prev;
+    });
+    setSelectedChat(newId);
+  }, [selectedId, setChatMap, setSelectedChat]);
+  const clearChatMap = useCallback(() => {
     setChatMap({});
-  }, [setChatMap]);
+    setSelectedChat(null);
+  }, [setChatMap, setSelectedChat]);
   useEffect(() => {
     if (!selectedId) {
       addChat();
     }
   }, [selectedId, addChat]);
 
-  const [apiKey, setApiKey] = useLocalStorage("chatmind.api-key", "");
+  const [apiKey, setApiKey] = useLocalStorage<string | null>("chatmind.api-key", "");
   const { toast } = useToast();
-  const updateApiKey = useCallback(
+  const saveApiKey = useCallback(
     (input: string) => {
       if (!input.startsWith("sk-")) {
         toast({
@@ -103,19 +112,28 @@ export function useChat() {
         description:
           "You API key has been saved in your browser, you can now chat with ChatGPT.",
       });
+      if (chatSize === 0) {
+        addChat();
+      }
     },
-    [setApiKey, toast]
+    [addChat, chatSize, setApiKey, toast]
   );
+  const clearApiKey = useCallback(() => {
+    setApiKey(null);
+  }, [setApiKey]);
   return {
     selectedId,
-    selectedChat: chatMap[selectedId],
+    selectedChat:
+      selectedId && selectedId in chatMap ? chatMap[selectedId] : null,
     updateCurrentChat,
-    resetMessages,
-    resetChatMap,
+    clearCurrentChat,
+    clearChatMap,
     addChat,
     chatMap,
+    chatSize,
     selectChat,
     apiKey,
-    updateApiKey,
+    saveApiKey,
+    clearApiKey,
   };
 }

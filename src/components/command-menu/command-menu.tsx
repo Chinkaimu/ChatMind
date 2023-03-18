@@ -5,7 +5,9 @@ import * as React from "react";
 
 import { useKeyPressEvent } from "../../hooks/use-key-press-event";
 import {
+  CheckCircle,
   Clipboard,
+  Copy,
   Eraser,
   Link,
   ListX,
@@ -15,6 +17,7 @@ import {
 } from "lucide-react";
 import { useChat } from "../../hooks/use-chat";
 import { Subtle } from "../typograph";
+import { toast } from "../toast";
 
 export type CommandMenuProps = {
   triggerClassName?: string;
@@ -42,21 +45,34 @@ export function CommandMenu({
   );
   const {
     chatMap,
+    chatSize,
     addChat,
-    resetChatMap,
-    resetMessages,
+    clearChatMap,
+    clearCurrentChat,
     selectedChat,
+    selectedId,
     apiKey,
-    updateApiKey,
+    saveApiKey,
+    clearApiKey,
     selectChat,
   } = useChat();
   const actions: Action[] = [
     ...(apiKey
       ? [
           {
-            name: "Reset API key",
+            name: "Copy API key",
+            icon: <Copy size={16} />,
+            onSelect: async () => {
+              await navigator.clipboard.writeText(apiKey);
+              toast({
+                title: "Copied API key to clipboard",
+              });
+            },
+          },
+          {
+            name: "Clear API key",
             icon: <Trash size={16} />,
-            onSelect: () => updateApiKey(""),
+            onSelect: () => clearApiKey(),
             destructive: true,
           },
         ]
@@ -76,7 +92,7 @@ export function CommandMenu({
             icon: <Clipboard size={16} />,
             onSelect: async () => {
               const text = await navigator.clipboard.readText();
-              updateApiKey(text);
+              saveApiKey(text);
             },
           },
         ]),
@@ -85,17 +101,17 @@ export function CommandMenu({
           {
             name: "Clear this chat",
             icon: <ListX size={16} />,
-            onSelect: () => resetMessages(),
+            onSelect: () => clearCurrentChat(),
             destructive: true,
           },
         ]
       : []),
-    ...(Object.keys(chatMap).length > 0
+    ...(chatSize > 0
       ? [
           {
             name: "Clear all chats",
             icon: <Eraser size={16} />,
-            onSelect: () => resetChatMap(),
+            onSelect: () => clearChatMap(),
             destructive: true,
           },
         ]
@@ -143,12 +159,24 @@ export function CommandMenu({
                   setOpen(false);
                 }}
                 key={chatId}
+                className="gap-2"
               >
-                {chat.title}
+                {chatId === selectedId ? (
+                  <CheckCircle size={16} />
+                ) : (
+                  <span className="inline-block w-4" />
+                )}
+                <span>{chat.title}</span>
               </CommandMenu.Item>
             ))}
             {apiKey && (
-              <CommandMenu.Item key="new chat" onSelect={() => addChat()}>
+              <CommandMenu.Item
+                key="new chat"
+                onSelect={() => {
+                  addChat();
+                  setOpen(false);
+                }}
+              >
                 <Plus size={20} />
                 <span>New chat</span>
               </CommandMenu.Item>
@@ -158,7 +186,10 @@ export function CommandMenu({
           <CommandMenu.Group heading="Actions">
             {actions.map((action) => (
               <Item
-                onSelect={action.onSelect}
+                onSelect={() => {
+                  action.onSelect();
+                  setOpen(false);
+                }}
                 key={action.name}
                 destructive={action.destructive}
               >
@@ -207,8 +238,6 @@ function Item({
   destructive,
   ...props
 }: React.ComponentProps<typeof Command.Item> & {
-  href?: string;
-  onSelect?: () => void;
   destructive?: boolean;
 }): JSX.Element {
   return (

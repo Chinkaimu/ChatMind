@@ -28,13 +28,13 @@ const Home: NextPage = () => {
     if (!listRef.current) return;
     listRef.current.scrollTop = listRef.current.scrollHeight;
   };
-  const { selectedChat, updateCurrentChat, apiKey, updateApiKey } = useChat();
+  const { selectedChat, updateCurrentChat, apiKey, saveApiKey } = useChat();
 
   const isMounted = useIsMounted();
   const selectedMessages = selectedChat?.messages || [];
   const handleClickSend = async () => {
     if (!apiKey) {
-      updateApiKey(input);
+      saveApiKey(input);
     }
     const index = selectedMessages.length;
     setInput("");
