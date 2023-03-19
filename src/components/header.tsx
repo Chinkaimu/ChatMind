@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { bluredBgStyles } from "./styles";
 import { useChat } from "../hooks/use-chat";
 import { Paragraph } from "./typograph";
-// import { SignedIn, UserButton, SignedOut, SignInButton } from "@clerk/nextjs";
+import { SignedIn, UserButton, SignedOut, SignInButton } from "@clerk/nextjs";
 
 export function Header(): JSX.Element {
   const { selectedChat } = useChat();
@@ -12,12 +12,16 @@ export function Header(): JSX.Element {
       <div className={clsx("mx-auto max-w-3xl py-4", bluredBgStyles)}>
         <div className="flex min-h-[24px] items-center justify-start">
           <Paragraph className="px-3">{selectedChat?.title}</Paragraph>
-          {/* <SignedIn>
-              <UserButton />
-            </SignedIn>
-            <SignedOut>
-              <SignInButton />
-            </SignedOut> */}
+          {process.env.NODE_ENV === "development" && (
+            <>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+              <SignedOut>
+                <SignInButton />
+              </SignedOut>
+            </>
+          )}
         </div>
       </div>
     </header>

@@ -34,15 +34,16 @@ const Home: NextPage = () => {
   const handleClickSend = async () => {
     if (!apiKey) {
       saveApiKey(input);
+      setInput("");
       return;
     }
     const index = selectedMessages.length;
-    setInput("");
     const newMessage: ChatMessage = {
       question: input,
       answer: "",
       createdAt: Date.now(),
     };
+    setInput("");
     updateCurrentChat(index, () => newMessage);
     let data: ReadableStream<Uint8Array>;
     try {

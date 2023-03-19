@@ -167,6 +167,13 @@ export function CommandMenu({
                   <span className="inline-block w-4" />
                 )}
                 <span>{chat.title}</span>
+                <span>
+                  {chat.messages.reduce((prev, current) => {
+                    return (
+                      `${prev} ${current.question} ${current.answer}`
+                    );
+                  }, "")}
+                </span>
               </CommandMenu.Item>
             ))}
             {apiKey && (
