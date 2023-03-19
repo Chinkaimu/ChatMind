@@ -19,6 +19,8 @@ import { useChat } from "../hooks/use-chat";
 import { useIsMounted } from "usehooks-ts";
 import { CommandShortCut } from "../components/command-menu";
 import { useUser } from "@clerk/nextjs";
+import { useNewVersionAvailable } from "../hooks/use-new-version-available";
+import { Banner } from "../components/banner";
 
 const Home: NextPage = () => {
   const [input, setInput] = useLocalStorage("chatmind.input", "");
@@ -111,7 +113,7 @@ const Home: NextPage = () => {
         }));
       }
     } catch (err) {
-      console.log("Chat request failed", err);
+      console.error("Chat request failed", err);
       if (err instanceof Error) {
         updateCurrentChat(index, () => ({
           // @ts-expect-error
@@ -182,54 +184,57 @@ const Home: NextPage = () => {
                 </div>
               ))}
             </section>
-            <div className="fixed bottom-0 flex w-full  max-w-3xl flex-col gap-2 border-t bg-white/75 py-6 backdrop-blur-xl backdrop-saturate-150">
-              <div className="flex items-start gap-2">
-                <TextArea
-                  name="chat"
-                  placeholder={
-                    apiKey
-                      ? "Ask anything. (Press Shift + Enter to insert a new line)"
-                      : "Enter your OpenAI API key to start."
-                  }
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (input && e.key === "Enter" && !e.shiftKey) {
-                      handleClickSend();
-                      e.preventDefault();
-                    } else if (e.key === "Enter" && e.shiftKey) {
-                      setInput((prev) => `${prev}\n`);
+            <div className="fixed bottom-0 w-full max-w-3xl bg-white/75 backdrop-blur-xl backdrop-saturate-150">
+              <Banner />
+              <div className="flex flex-col gap-2 border-t mt-2 py-6">
+                <div className="flex items-start gap-2">
+                  <TextArea
+                    name="chat"
+                    placeholder={
+                      apiKey
+                        ? "Ask anything. (Press Shift + Enter to insert a new line)"
+                        : "Enter your OpenAI API key to start."
                     }
-                  }}
-                  className="min-h-[6em]"
-                />
-                <Button
-                  variant="subtle"
-                  onClick={handleClickSend}
-                  disabled={!input}
-                >
-                  {apiKey ? <Send size={20} /> : "Save"}
-                </Button>
-              </div>
-              <div className="flex gap-2 py-1">
-                <Subtle className="flex items-center gap-1">
-                  <span>Want a new chat? Try</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      dispatchEvent(
-                        new KeyboardEvent("keydown", {
-                          key: "k",
-                          metaKey: true,
-                        })
-                      );
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (input && e.key === "Enter" && !e.shiftKey) {
+                        handleClickSend();
+                        e.preventDefault();
+                      } else if (e.key === "Enter" && e.shiftKey) {
+                        setInput((prev) => `${prev}\n`);
+                      }
                     }}
+                    className="min-h-[6em]"
+                  />
+                  <Button
+                    variant="subtle"
+                    onClick={handleClickSend}
+                    disabled={!input}
                   >
-                    <span>Command menu</span>
-                    <CommandShortCut />
+                    {apiKey ? <Send size={20} /> : "Save"}
                   </Button>
-                </Subtle>
+                </div>
+                <div className="flex gap-2 py-1">
+                  <Subtle className="flex items-center gap-1">
+                    <span>Want a new chat? Try</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        dispatchEvent(
+                          new KeyboardEvent("keydown", {
+                            key: "k",
+                            metaKey: true,
+                          })
+                        );
+                      }}
+                    >
+                      <span>Command menu</span>
+                      <CommandShortCut />
+                    </Button>
+                  </Subtle>
+                </div>
               </div>
             </div>
           </main>

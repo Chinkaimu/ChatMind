@@ -35,8 +35,7 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, ...props }, ref) => {
     return (
-      <button
-        type="button"
+      <BaseButton
         className={clsx(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
@@ -46,4 +45,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+const BaseButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => {
+  return (
+    <button
+      type="button"
+      className={clsx("select-none", className)}
+      ref={ref}
+      {...props}
+    />
+  );
+});
+BaseButton.displayName = "BaseButton";
+
+export { Button, buttonVariants, BaseButton };

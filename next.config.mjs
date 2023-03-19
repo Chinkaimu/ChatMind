@@ -9,7 +9,9 @@
 import nextPWA from 'next-pwa';
 
 const withPWA = nextPWA({
-  dest: 'public'
+  dest: 'public',
+  register: false,
+  skipWaiting: false
 });
 
 /** @type {import("next").NextConfig} */
