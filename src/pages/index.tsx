@@ -147,7 +147,7 @@ const Home: NextPage = () => {
               className="flex h-full flex-col gap-6 overflow-y-auto py-40"
               ref={listRef}
             >
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 mb-10 sm:mb-20">
                 <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                   👋 Welcome to ChatMind
                 </h1>
