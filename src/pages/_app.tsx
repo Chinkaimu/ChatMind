@@ -27,6 +27,11 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
         <meta name="msapplication-TileColor" content="#2B5797" />
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="theme-color" content="#000000" />
+        <meta
+          name="description"
+          content="Enhancing your ChatGPT experience with ChatMind."
+        />
+        <link rel="icon" href="/favicon.svg" />
 
         <link rel="apple-touch-icon" href="/icons/touch-icon-iphone.png" />
         <link
@@ -76,7 +81,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
           name="twitter:image"
           content="https://chatmind.co/icons/android-chrome-192x192.png"
         />
-        <meta name="twitter:creator" content="@DavidWShadow" />
+        <meta name="twitter:creator" content="@devrsi0n" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="ChatMind" />
         <meta

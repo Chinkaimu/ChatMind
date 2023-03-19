@@ -130,14 +130,6 @@ const Home: NextPage = () => {
   const { user } = useUser();
   return (
     <>
-      <Head>
-        <title>ChatMind app</title>
-        <meta
-          name="description"
-          content="Enhancing your ChatGPT experience with ChatMind."
-        />
-        <link rel="icon" href="/favicon.svg" />
-      </Head>
       <div className="flex h-full">
         <Sidebar />
         <div className="relative w-full overflow-y-hidden">
