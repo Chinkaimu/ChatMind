@@ -13,12 +13,16 @@ import {
   ListX,
   Plus,
   Search,
+  Shield,
+  Star,
   Trash,
 } from "lucide-react";
 import { useChat } from "../../hooks/use-chat";
 import { Subtle } from "../typograph";
 import { toast } from "../toast";
 import { title } from "process";
+import { ChatMap } from "../../types";
+import { BaseButton } from '../button';
 
 export type CommandMenuProps = {
   triggerClassName?: string;
@@ -116,8 +120,7 @@ export function CommandMenu({
   ];
   return (
     <>
-      <button
-        type="button"
+      <BaseButton
         onClick={() => setOpen((prev) => !prev)}
         className={clsx(
           "flex items-center rounded-lg border border-gray-300 py-3 px-3.5 text-base text-gray-800 hover:border-gray-400",
@@ -127,7 +130,7 @@ export function CommandMenu({
         <Search size={18} />
         <span className="ml-2 leading-none">Chats</span>
         <CommandShortCut />
-      </button>
+      </BaseButton>
       <Command.Dialog
         loop
         open={open}
@@ -143,12 +146,11 @@ export function CommandMenu({
         <div className="py-2 px-[18px]">
           <Subtle>{`Use arrow keys for navigation, enter key to confirm`}</Subtle>
         </div>
-        {/* <CommandMenu.Separator /> */}
         <Command.List className="h-[30vh] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300/60">
           <Command.Empty className="py-3 px-[18px]">
             No results found.
           </Command.Empty>
-          <Chats setOpen={setOpen} />
+          <ChatGroup onSelect={() => setOpen(false)} />
           <CommandMenu.Separator />
           <CommandMenu.Group heading="Actions">
             {actions.map((action) => (
@@ -165,26 +167,38 @@ export function CommandMenu({
               </Item>
             ))}
           </CommandMenu.Group>
+          <CommandMenu.Separator />
+          <LinkGroup onSelect={() => setOpen(false)} />
         </Command.List>
       </Command.Dialog>
     </>
   );
 }
 
-function Chats({ setOpen }: { setOpen: (value: boolean) => void }) {
+type ChatGroupProps = { onSelect: () => void };
+function ChatGroup({ onSelect }: ChatGroupProps) {
   const { chatMap, addChat, selectedId, apiKey, selectChat } = useChat();
   const search = useCommandState((state) => state.search);
+  const msgMap: Record<keyof ChatMap, string> = React.useMemo(() => {
+    return Object.entries(chatMap).reduce((prev, [chatId, chat]) => {
+      const msg: string = chat.messages.reduce((prev, current) => {
+        return `${prev} ${current.question.toLowerCase()} ${current.answer.toLowerCase()}`;
+      }, "");
+      return {
+        ...prev,
+        [chatId]: msg,
+      };
+    }, {});
+  }, [chatMap]);
 
   return (
     <CommandMenu.Group heading="Switch chat">
       {Object.entries(chatMap).map(([chatId, chat]) => {
-        const msg: string = chat.messages.reduce((prev, current) => {
-          return `${prev} ${current.question} ${current.answer}`;
-        }, "");
-        const foundIndex = msg.toLowerCase().indexOf(search);
+        const msg = msgMap[chatId];
+        const foundIndex = msg?.indexOf(search) ?? -1;
         const foundContext = search
-          ? msg.slice(
-              Math.max(0, foundIndex - 100),
+          ? msg?.slice(
+              Math.max(0, foundIndex - 20),
               Math.min(foundIndex + 100, msg.length)
             )
           : "";
@@ -193,7 +207,7 @@ function Chats({ setOpen }: { setOpen: (value: boolean) => void }) {
             <CommandMenu.Item
               onSelect={() => {
                 selectChat(chatId);
-                setOpen(false);
+                onSelect();
               }}
               className="gap-2"
               value={`${title} ${msg}`}
@@ -207,7 +221,7 @@ function Chats({ setOpen }: { setOpen: (value: boolean) => void }) {
             </CommandMenu.Item>
             {foundContext && (
               <p className="mx-2 flex gap-2 whitespace-nowrap px-3 py-1 text-xs text-gray-600 line-clamp-1">
-                <strong>Found:</strong>
+                <strong className="mr-2">Found:</strong>
                 <span>{foundContext}</span>
               </p>
             )}
@@ -219,7 +233,7 @@ function Chats({ setOpen }: { setOpen: (value: boolean) => void }) {
           key="new chat"
           onSelect={() => {
             addChat();
-            setOpen(false);
+            onSelect();
           }}
         >
           <Plus size={20} />
@@ -227,6 +241,37 @@ function Chats({ setOpen }: { setOpen: (value: boolean) => void }) {
         </CommandMenu.Item>
       )}
     </CommandMenu.Group>
+  );
+}
+
+const links = [
+  {
+    name: "GitHub repo",
+    icon: <Star size={16} />,
+    href: "https://github.com/devrsi0n/ChatMind",
+  },
+  {
+    name: "Privacy policy",
+    icon: <Shield size={16} />,
+    href: "/privacy",
+  },
+];
+function LinkGroup(props: ChatGroupProps) {
+  return (
+    <Group heading="Links">
+      {links.map((link) => (
+        <Item
+          key={link.name}
+          onSelect={() => {
+            window.open(link.href, link.href.startsWith("/") ? "" : "_blank");
+            props.onSelect();
+          }}
+        >
+          {link.icon}
+          <span>{link.name}</span>
+        </Item>
+      ))}
+    </Group>
   );
 }
 

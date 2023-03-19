@@ -12,6 +12,7 @@ import {
   UserMessage,
   Sidebar,
   Subtle,
+  Paragraph,
 } from "../components";
 import { type ChatMessage, type ChatGPTMessage } from "../types";
 import Link from "next/link";
@@ -157,6 +158,16 @@ const Home: NextPage = () => {
                     </Link>
                   </div>
                 )}
+                <Paragraph className="!mt-3">
+                  Give us a ⭐ on{" "}
+                  <a
+                    href="https://github.com/devrsi0n/ChatMind"
+                    className="underline"
+                  >
+                    GitHub
+                  </a>{" "}
+                  , it will help us a lot!
+                </Paragraph>
               </div>
               {selectedMessages.map((msg) => (
                 <div
