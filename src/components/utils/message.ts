@@ -1,4 +1,4 @@
-import { ChatMessage, ChatGPTMessage } from '../types';
+import { ChatMessage, ChatGPTMessage } from '../../types';
 
 const MAX_TOKEN = 4097;
 

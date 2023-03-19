@@ -1,4 +1,4 @@
-import { type OpenAIStreamPayload, type ChatMessage } from "../types";
+import { type OpenAIStreamPayload, type ChatMessage } from "../../types";
 
 export async function directChat(
   apiKey: string,

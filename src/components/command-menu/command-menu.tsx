@@ -1,4 +1,4 @@
-import { isSSRMode } from "../../utils/ssr";
+import { isSSRMode } from "../utils/ssr";
 import clsx from "clsx";
 import { Command, useCommandState } from "cmdk";
 import * as React from "react";

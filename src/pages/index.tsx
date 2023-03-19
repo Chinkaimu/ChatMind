@@ -19,8 +19,8 @@ import { useChat } from "../hooks/use-chat";
 import { useIsMounted } from "usehooks-ts";
 import { CommandShortCut } from "../components/command-menu";
 import { useUser } from "@clerk/nextjs";
-import { useNewVersionAvailable } from "../hooks/use-new-version-available";
 import { Banner } from "../components/banner";
+import { isMobile } from "../components/utils/is-mobile";
 
 const Home: NextPage = () => {
   const [input, setInput] = useLocalStorage("chatmind.input", "");
@@ -192,7 +192,10 @@ const Home: NextPage = () => {
                     name="chat"
                     placeholder={
                       apiKey
-                        ? "Ask anything. (Press Shift + Enter to insert a new line)"
+                        ? `Ask anything.${
+                            !isMobile() &&
+                            " (Press Shift + Enter to insert a new line)"
+                          }`
                         : "Enter your OpenAI API key to start."
                     }
                     value={input}

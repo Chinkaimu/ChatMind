@@ -1,6 +1,6 @@
 import { type AppProps, type AppType } from "next/app";
 import { ClerkProvider } from "@clerk/nextjs";
-import { api } from "~/utils/api";
+import { api } from "~/components/utils/api";
 import { Inter } from "next/font/google";
 import "~/styles/globals.css";
 import { Toaster } from "../components";

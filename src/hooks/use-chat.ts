@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useToast } from "../components/toast";
 import { type ChatMap, type ChatMessage } from "../types";
-import { api } from "../utils/api";
-import { getRandomChatId } from "../utils/chat";
+import { api } from "../components/utils/api";
+import { getRandomChatId } from "../components/utils/chat";
 import useLocalStorage from "./use-local-storage";
 
 export function useChat() {
