@@ -137,7 +137,7 @@ export function useChat() {
       enabled: !!(
         apiKey &&
         (selectedChat?.messages.length || 0 >= 4) &&
-        !selectedChat?.title
+        !/^Chat \d+$/gi.test(selectedChat?.title || '')
       ),
       onSuccess(data) {
         if (!data) return;
