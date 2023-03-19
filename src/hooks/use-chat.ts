@@ -127,13 +127,18 @@ export function useChat() {
   }, [setApiKey]);
   const selectedChat =
     selectedId && selectedId in chatMap ? chatMap[selectedId] : null;
-  const { data } = api.chat.summary.useQuery(
+  api.chat.summary.useQuery(
     {
       apiKey: apiKey!,
       messages: selectedChat?.messages!,
     },
     {
-      enabled: !!(apiKey && (selectedChat?.messages.length || 0 >= 4)),
+      // Generate once for each chat
+      enabled: !!(
+        apiKey &&
+        (selectedChat?.messages.length || 0 >= 4) &&
+        !selectedChat?.title
+      ),
       onSuccess(data) {
         if (!data) return;
         // @ts-ignore

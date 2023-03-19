@@ -5,7 +5,7 @@ import {
 } from "eventsource-parser";
 import { type OpenAIStreamPayload } from "../../types";
 
-export type ChatGPTPayload = Omit<Partial<OpenAIStreamPayload>, "stream">;
+export type ChatGPTPayload = Partial<OpenAIStreamPayload>;
 
 export async function fetchChatGPT(
   apiKey: string,
@@ -19,15 +19,18 @@ export async function fetchChatGPT(
     method: "POST",
     body: JSON.stringify({
       max_tokens: 500,
-      ...payload,
       model: "gpt-3.5-turbo",
+      ...payload,
     }),
   });
   return res;
 }
 
-export async function chatGPTStream(apiKey: string, payload: ChatGPTPayload) {
-  const res = await fetchChatGPT(apiKey, payload);
+export async function chatGPTStream(
+  apiKey: string,
+  payload: Omit<ChatGPTPayload, "stream">
+) {
+  const res = await fetchChatGPT(apiKey, { ...payload, stream: true });
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 

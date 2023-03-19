@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useChat } from "../hooks/use-chat";
 import { useIsMounted } from "usehooks-ts";
 import { CommandShortCut } from "../components/command-menu";
+import { useUser } from "@clerk/nextjs";
 
 const Home: NextPage = () => {
   const [input, setInput] = useLocalStorage("chatmind.input", "");
@@ -122,7 +123,7 @@ const Home: NextPage = () => {
     scrollListIntoView();
   }, [selectedMessages.length]);
 
-  // const clerk = useClerk();
+  const { user } = useUser();
   return (
     <>
       <Head>
@@ -167,7 +168,7 @@ const Home: NextPage = () => {
                   className="flex flex-col gap-3"
                 >
                   <UserMessage
-                    // avatarUrl={user?.profileImageUrl}
+                    avatarUrl={user?.profileImageUrl}
                     date={msg.createdAt}
                     className="pl-12 pr-1"
                   >
@@ -209,9 +210,23 @@ const Home: NextPage = () => {
                 </Button>
               </div>
               <div className="flex gap-2 py-1">
-                <Subtle className="flex">
-                  <span>Find more settings in command menu</span>
-                  <CommandShortCut />
+                <Subtle className="flex items-center gap-1">
+                  <span>Want a new chat? Try</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      dispatchEvent(
+                        new KeyboardEvent("keydown", {
+                          key: "k",
+                          metaKey: true,
+                        })
+                      );
+                    }}
+                  >
+                    <span>Command menu</span>
+                    <CommandShortCut />
+                  </Button>
                 </Subtle>
               </div>
             </div>

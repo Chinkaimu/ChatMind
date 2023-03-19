@@ -44,8 +44,10 @@ export const chatRouter = createTRPCRouter({
               "Could you summary the main topic of this conversation? No more than 10 words.",
           },
         ],
+        max_tokens: 50,
+        stream: false,
       });
-      const data = await res.json() as ChatResponse;
+      const data = (await res.json()) as ChatResponse;
       return data.choices[0]?.message.content;
     }),
 });

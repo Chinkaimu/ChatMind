@@ -95,7 +95,9 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
           font-family: ${inter.style.fontFamily};
         }
       `}</style>
-      <Component {...pageProps} />
+      <ClerkProvider {...pageProps}>
+        <Component {...pageProps} />
+      </ClerkProvider>
       <Toaster />
     </>
   );
