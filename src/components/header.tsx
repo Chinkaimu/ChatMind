@@ -10,7 +10,7 @@ export function Header(): JSX.Element {
   return (
     <header className="absolute top-0 left-0 z-10 w-full border-b">
       <div className={clsx("mx-auto max-w-3xl py-4", bluredBgStyles)}>
-        <div className="flex min-h-[24px] items-center justify-start">
+        <div className="flex items-center justify-start">
           <Paragraph className="px-3">{selectedChat?.title}</Paragraph>
           {process.env.NODE_ENV === "development" && (
             <>

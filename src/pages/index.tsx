@@ -140,14 +140,14 @@ const Home: NextPage = () => {
       </Head>
       <div className="flex h-full">
         <Sidebar />
-        <div className="relative w-full">
+        <div className="relative w-full overflow-y-hidden">
           <Header />
           <main className="mx-auto h-[calc(100%-54px)] max-w-3xl px-3">
             <section
               className="flex h-full flex-col gap-6 overflow-y-auto py-40"
               ref={listRef}
             >
-              <div className="flex flex-col gap-2 mb-10 sm:mb-20">
+              <div className="mb-10 flex flex-col gap-2 sm:mb-20">
                 <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                   👋 Welcome to ChatMind
                 </h1>
@@ -184,9 +184,9 @@ const Home: NextPage = () => {
                 </div>
               ))}
             </section>
-            <div className="fixed bottom-0 w-full max-w-3xl bg-white/75 backdrop-blur-xl backdrop-saturate-150">
+            <div className="sticky bottom-0 w-full max-w-3xl bg-white/75 backdrop-blur-xl backdrop-saturate-150">
               <Banner />
-              <div className="flex flex-col gap-2 border-t mt-2 py-6">
+              <div className="mt-2 flex flex-col gap-2 border-t py-6">
                 <div className="flex items-start gap-2">
                   <TextArea
                     name="chat"
@@ -205,17 +205,19 @@ const Home: NextPage = () => {
                         setInput((prev) => `${prev}\n`);
                       }
                     }}
+                    enterKeyHint="send"
                     className="min-h-[6em]"
                   />
                   <Button
                     variant="subtle"
                     onClick={handleClickSend}
                     disabled={!input}
+                    className="hidden sm:flex"
                   >
                     {apiKey ? <Send size={20} /> : "Save"}
                   </Button>
                 </div>
-                <div className="flex gap-2 py-1">
+                <div className="hidden gap-2 py-1 sm:flex">
                   <Subtle className="flex items-center gap-1">
                     <span>Want a new chat? Try</span>
                     <Button

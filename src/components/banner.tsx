@@ -1,5 +1,4 @@
 import * as React from "react";
-import clsx from "clsx";
 import { X } from "lucide-react";
 import { useNewVersionAvailable } from "../hooks/use-new-version-available";
 import { BaseButton } from "./button";
@@ -11,12 +10,10 @@ export function Banner(): JSX.Element {
     return <></>;
   }
   return (
-    <div className="flex justify-between rounded-t bg-primary-600 py-1.5 px-4">
+    <div className="flex justify-between rounded-t bg-primary-600 py-1.5 px-4 text-sm">
       <div className="flex items-center gap-4">
         <IconStart />
-        <p className="text-base font-semibold text-white">
-          A new version is available!
-        </p>
+        <p className="font-semibold text-white">A new version is available!</p>
       </div>
       <div className="flex items-center gap-2">
         <BaseButton
@@ -28,6 +25,7 @@ export function Banner(): JSX.Element {
         <BaseButton
           className="rounded p-2 text-white hover:bg-gray-400/75"
           onClick={handleDismiss}
+          aria-label="Dismiss"
         >
           <X size={16} />
         </BaseButton>
