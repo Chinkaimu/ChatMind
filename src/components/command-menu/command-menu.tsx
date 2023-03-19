@@ -1,6 +1,6 @@
 import { isSSRMode } from "../../utils/ssr";
 import clsx from "clsx";
-import { Command } from "cmdk";
+import { Command, useCommandState } from "cmdk";
 import * as React from "react";
 
 import { useKeyPressEvent } from "../../hooks/use-key-press-event";
@@ -18,6 +18,7 @@ import {
 import { useChat } from "../../hooks/use-chat";
 import { Subtle } from "../typograph";
 import { toast } from "../toast";
+import { title } from "process";
 
 export type CommandMenuProps = {
   triggerClassName?: string;
@@ -44,17 +45,13 @@ export function CommandMenu({
     }
   );
   const {
-    chatMap,
     chatSize,
-    addChat,
     clearChatMap,
     clearCurrentChat,
     selectedChat,
-    selectedId,
     apiKey,
     saveApiKey,
     clearApiKey,
-    selectChat,
   } = useChat();
   const actions: Action[] = [
     ...(apiKey
@@ -151,44 +148,7 @@ export function CommandMenu({
           <Command.Empty className="py-3 px-[18px]">
             No results found.
           </Command.Empty>
-          <CommandMenu.Group heading="Switch chat">
-            {Object.entries(chatMap).map(([chatId, chat]) => (
-              <CommandMenu.Item
-                onSelect={() => {
-                  selectChat(chatId);
-                  setOpen(false);
-                }}
-                key={chatId}
-                className="gap-2"
-              >
-                {chatId === selectedId ? (
-                  <CheckCircle size={16} />
-                ) : (
-                  <span className="inline-block w-4" />
-                )}
-                <span>{chat.title}</span>
-                <span>
-                  {chat.messages.reduce((prev, current) => {
-                    return (
-                      `${prev} ${current.question} ${current.answer}`
-                    );
-                  }, "")}
-                </span>
-              </CommandMenu.Item>
-            ))}
-            {apiKey && (
-              <CommandMenu.Item
-                key="new chat"
-                onSelect={() => {
-                  addChat();
-                  setOpen(false);
-                }}
-              >
-                <Plus size={20} />
-                <span>New chat</span>
-              </CommandMenu.Item>
-            )}
-          </CommandMenu.Group>
+          <Chats setOpen={setOpen} />
           <CommandMenu.Separator />
           <CommandMenu.Group heading="Actions">
             {actions.map((action) => (
@@ -208,6 +168,65 @@ export function CommandMenu({
         </Command.List>
       </Command.Dialog>
     </>
+  );
+}
+
+function Chats({ setOpen }: { setOpen: (value: boolean) => void }) {
+  const { chatMap, addChat, selectedId, apiKey, selectChat } = useChat();
+  const search = useCommandState((state) => state.search);
+
+  return (
+    <CommandMenu.Group heading="Switch chat">
+      {Object.entries(chatMap).map(([chatId, chat]) => {
+        const msg: string = chat.messages.reduce((prev, current) => {
+          return `${prev} ${current.question} ${current.answer}`;
+        }, "");
+        const foundIndex = msg.toLowerCase().indexOf(search);
+        const foundContext = search
+          ? msg.slice(
+              Math.max(0, foundIndex - 100),
+              Math.min(foundIndex + 100, msg.length)
+            )
+          : "";
+        return (
+          <div key={chatId}>
+            <CommandMenu.Item
+              onSelect={() => {
+                selectChat(chatId);
+                setOpen(false);
+              }}
+              className="gap-2"
+              value={`${title} ${msg}`}
+            >
+              {chatId === selectedId ? (
+                <CheckCircle size={16} />
+              ) : (
+                <span className="inline-block w-4" />
+              )}
+              <span>{chat.title}</span>
+            </CommandMenu.Item>
+            {foundContext && (
+              <p className="mx-2 flex gap-2 whitespace-nowrap px-3 py-1 text-xs text-gray-600 line-clamp-1">
+                <strong>Found:</strong>
+                <span>{foundContext}</span>
+              </p>
+            )}
+          </div>
+        );
+      })}
+      {apiKey && (
+        <CommandMenu.Item
+          key="new chat"
+          onSelect={() => {
+            addChat();
+            setOpen(false);
+          }}
+        >
+          <Plus size={20} />
+          <span>New chat</span>
+        </CommandMenu.Item>
+      )}
+    </CommandMenu.Group>
   );
 }
 
@@ -277,7 +296,7 @@ function Input(props: React.ComponentProps<typeof Command.Input>): JSX.Element {
     <div className="flex gap-2 border-b border-gray-300 p-4">
       <Search />
       <Command.Input
-        placeholder="Search"
+        placeholder="Search history"
         autoFocus
         {...props}
         className={clsx(

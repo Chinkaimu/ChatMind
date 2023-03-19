@@ -57,6 +57,7 @@ const config = {
   plugins: [
     require('@tailwindcss/typography'),
     require('tailwind-scrollbar'),
+    require('@tailwindcss/line-clamp'),
   ],
 };
 
