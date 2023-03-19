@@ -46,8 +46,8 @@ export function CommandMenu({
   );
   const {
     chatSize,
-    clearChatMap,
-    clearCurrentChat,
+    resetChatMap,
+    deleteCurrentChat,
     selectedChat,
     apiKey,
     saveApiKey,
@@ -96,9 +96,9 @@ export function CommandMenu({
     ...(selectedChat?.title
       ? [
           {
-            name: "Clear this chat",
+            name: "Delete current chat",
             icon: <ListX size={16} />,
-            onSelect: () => clearCurrentChat(),
+            onSelect: () => deleteCurrentChat(),
             destructive: true,
           },
         ]
@@ -106,9 +106,9 @@ export function CommandMenu({
     ...(chatSize > 0
       ? [
           {
-            name: "Clear all chats",
+            name: "Delete all chats",
             icon: <Eraser size={16} />,
-            onSelect: () => clearChatMap(),
+            onSelect: () => resetChatMap(),
             destructive: true,
           },
         ]

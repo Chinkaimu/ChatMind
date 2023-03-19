@@ -68,7 +68,7 @@ export function useChat() {
     },
     [setSelectedChat]
   );
-  const clearCurrentChat = useCallback(() => {
+  const deleteCurrentChat = useCallback(() => {
     if (!selectedId) {
       throw new Error(`No chat selected when resetting messages`);
     }
@@ -85,7 +85,7 @@ export function useChat() {
     });
     setSelectedChat(newId);
   }, [selectedId, setChatMap, setSelectedChat]);
-  const clearChatMap = useCallback(() => {
+  const resetChatMap = useCallback(() => {
     setChatMap({});
     setSelectedChat(null);
   }, [setChatMap, setSelectedChat]);
@@ -163,8 +163,8 @@ export function useChat() {
     selectedId,
     selectedChat,
     updateCurrentChat,
-    clearCurrentChat,
-    clearChatMap,
+    deleteCurrentChat,
+    resetChatMap,
     addChat,
     chatMap,
     chatSize,
