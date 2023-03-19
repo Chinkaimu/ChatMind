@@ -21,8 +21,8 @@ import { useChat } from "../../hooks/use-chat";
 import { Subtle } from "../typograph";
 import { toast } from "../toast";
 import { title } from "process";
-import { ChatMap } from "../../types";
-import { BaseButton } from '../button';
+import { type ChatMap } from "../../types";
+import { BaseButton } from "../button";
 
 export type CommandMenuProps = {
   triggerClassName?: string;
@@ -203,29 +203,30 @@ function ChatGroup({ onSelect }: ChatGroupProps) {
             )
           : "";
         return (
-          <div key={chatId}>
-            <CommandMenu.Item
-              onSelect={() => {
-                selectChat(chatId);
-                onSelect();
-              }}
-              className="gap-2"
-              value={`${title} ${msg}`}
-            >
+          <Item
+            onSelect={() => {
+              selectChat(chatId);
+              onSelect();
+            }}
+            className="flex flex-col !items-start"
+            value={`${title} ${msg}`}
+            key={chatId}
+          >
+            <span className={"flex items-center gap-2"}>
               {chatId === selectedId ? (
                 <CheckCircle size={16} />
               ) : (
                 <span className="inline-block w-4" />
               )}
               <span>{chat.title}</span>
-            </CommandMenu.Item>
+            </span>
             {foundContext && (
-              <p className="mx-2 flex gap-2 whitespace-nowrap px-3 py-1 text-xs text-gray-600 line-clamp-1">
+              <p className="mx-3 flex w-full whitespace-nowrap px-3 py-1 text-xs text-gray-600 line-clamp-1">
                 <strong className="mr-2">Found:</strong>
                 <span>{foundContext}</span>
               </p>
             )}
-          </div>
+          </Item>
         );
       })}
       {apiKey && (
