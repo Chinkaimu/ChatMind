@@ -34,6 +34,7 @@ const Home: NextPage = () => {
   const handleClickSend = async () => {
     if (!apiKey) {
       saveApiKey(input);
+      return;
     }
     const index = selectedMessages.length;
     setInput("");
