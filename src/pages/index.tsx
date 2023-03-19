@@ -193,8 +193,9 @@ const Home: NextPage = () => {
                     placeholder={
                       apiKey
                         ? `Ask anything.${
-                            !isMobile() &&
-                            " (Press Shift + Enter to insert a new line)"
+                            !isMobile()
+                              ? " (Press Shift + Enter to insert a new line)"
+                              : ""
                           }`
                         : "Enter your OpenAI API key to start."
                     }
