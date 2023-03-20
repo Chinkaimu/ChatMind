@@ -15,13 +15,13 @@ import {
   Paragraph,
 } from "../components";
 import { type ChatMessage, type ChatGPTMessage } from "../types";
-import Link from "next/link";
 import { useChat } from "../hooks/use-chat";
 import { useIsMounted } from "usehooks-ts";
 import { CommandShortCut } from "../components/command-menu";
 import { useUser } from "@clerk/nextjs";
 import { Banner } from "../components/banner";
 import { isMobile } from "../components/utils/is-mobile";
+import { Link } from '../components/link';
 
 const Home: NextPage = () => {
   const [input, setInput] = useLocalStorage("chatmind.input", "");
@@ -151,7 +151,7 @@ const Home: NextPage = () => {
                     </p>
                     <Link
                       href="https://platform.openai.com/account/api-keys"
-                      className="text-sm text-gray-700 underline"
+                      className="text-sm text-gray-700 "
                       target="_blank"
                     >
                       Get your API key on OpenAI dashboard

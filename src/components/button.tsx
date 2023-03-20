@@ -3,7 +3,7 @@ import { type VariantProps, cva } from "class-variance-authority";
 import clsx from "clsx";
 
 const buttonVariants = cva(
-  "active:scale-95 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:opacity-50  disabled:pointer-events-none data-[state=open]:bg-gray-100",
+  "active:scale-95 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none data-[state=open]:bg-gray-100",
   {
     variants: {
       variant: {
@@ -52,7 +52,10 @@ const BaseButton = React.forwardRef<
   return (
     <button
       type="button"
-      className={clsx("select-none", className)}
+      className={clsx(
+        "select-none focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2",
+        className
+      )}
       ref={ref}
       {...props}
     />
