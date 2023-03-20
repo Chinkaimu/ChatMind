@@ -166,7 +166,7 @@ const Home: NextPage = () => {
                   >
                     GitHub
                   </a>{" "}
-                  , it will help us a lot!
+                  , it will help us a lot! Thanks for your support! ❤️
                 </Paragraph>
               </div>
               {selectedMessages.map((msg) => (

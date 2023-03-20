@@ -1,6 +1,6 @@
 import { isSSRMode } from "../utils/ssr";
 import clsx from "clsx";
-import { Command, useCommandState } from "cmdk";
+import { Command } from "cmdk";
 import * as React from "react";
 
 import { useKeyPressEvent } from "../../hooks/use-key-press-event";
@@ -21,7 +21,6 @@ import { useChat } from "../../hooks/use-chat";
 import { Subtle } from "../typograph";
 import { toast } from "../toast";
 import { title } from "process";
-import { type ChatMap } from "../../types";
 import { BaseButton } from "../button";
 
 export type CommandMenuProps = {
@@ -178,54 +177,23 @@ export function CommandMenu({
 type ChatGroupProps = { onSelect: () => void };
 function ChatGroup({ onSelect }: ChatGroupProps) {
   const { chatMap, addChat, selectedId, apiKey, selectChat } = useChat();
-  const search = useCommandState((state) => state.search);
-  const msgMap: Record<keyof ChatMap, string> = React.useMemo(() => {
-    return Object.entries(chatMap).reduce((prev, [chatId, chat]) => {
-      const msg: string = chat.messages.reduce((prev, current) => {
-        return `${prev} ${current.question.toLowerCase()} ${current.answer.toLowerCase()}`;
-      }, "");
-      return {
-        ...prev,
-        [chatId]: msg,
-      };
-    }, {});
-  }, [chatMap]);
-
   return (
     <CommandMenu.Group heading="Switch chat">
       {Object.entries(chatMap).map(([chatId, chat]) => {
-        const msg = msgMap[chatId];
-        const foundIndex = msg?.indexOf(search) ?? -1;
-        const foundContext = search
-          ? msg?.slice(
-              Math.max(0, foundIndex - 20),
-              Math.min(foundIndex + 100, msg.length)
-            )
-          : "";
         return (
           <Item
             onSelect={() => {
               selectChat(chatId);
               onSelect();
             }}
-            className="flex flex-col !items-start"
-            value={`${title} ${msg}`}
             key={chatId}
           >
-            <span className={"flex items-center gap-2"}>
-              {chatId === selectedId ? (
-                <CheckCircle size={16} />
-              ) : (
-                <span className="inline-block w-4" />
-              )}
-              <span>{chat.title}</span>
-            </span>
-            {foundContext && (
-              <p className="mx-3 flex w-full whitespace-nowrap px-3 py-1 text-xs text-gray-600 line-clamp-1">
-                <strong className="mr-2">Found:</strong>
-                <span>{foundContext}</span>
-              </p>
+            {chatId === selectedId ? (
+              <CheckCircle size={16} />
+            ) : (
+              <span className="inline-block w-4" />
             )}
+            <span>{chat.title}</span>
           </Item>
         );
       })}
@@ -342,7 +310,7 @@ function Input(props: React.ComponentProps<typeof Command.Input>): JSX.Element {
     <div className="flex gap-2 border-b border-gray-300 p-4">
       <Search />
       <Command.Input
-        placeholder="Search history"
+        placeholder="Search"
         autoFocus
         {...props}
         className={clsx(
