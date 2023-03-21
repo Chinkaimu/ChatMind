@@ -16,6 +16,7 @@ import {
   Shield,
   Star,
   Trash,
+  Twitter,
 } from "lucide-react";
 import { useChat } from "../../hooks/use-chat";
 import { Subtle } from "../typograph";
@@ -223,6 +224,11 @@ const links = [
     name: "Privacy policy",
     icon: <Shield size={16} />,
     href: "/privacy",
+  },
+  {
+    name: "Follow on twitter",
+    icon: <Twitter size={16} />,
+    href: "https://twitter.com/devrsi0n",
   },
 ];
 function LinkGroup(props: ChatGroupProps) {

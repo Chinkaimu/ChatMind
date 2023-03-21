@@ -14,6 +14,12 @@ export function Sidebar(): JSX.Element {
       </div>
       <div className="mx-2.5 mb-5 flex flex-col gap-2">
         <Link
+          href="https://twitter.com/devrsi0n"
+          className="text-gray-700 hover:text-gray-800"
+        >
+          Follow on twitter
+        </Link>
+        <Link
           href="https://github.com/devrsi0n/ChatMind"
           className="text-gray-700 hover:text-gray-800"
         >

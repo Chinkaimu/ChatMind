@@ -44,11 +44,11 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
           href="/assets/icons/apple-touch-icon.png"
         />
         <link rel="manifest" href="/manifest.json" />
-        <link
+        {/* <link
           rel="mask-icon"
           href="/icons/safari-pinned-tab.svg"
           color="#5bbad5"
-        />
+        /> */}
         <link rel="shortcut icon" href="/favicon.ico" />
         <link
           rel="apple-touch-startup-image"
