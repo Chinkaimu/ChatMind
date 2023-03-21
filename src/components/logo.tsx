@@ -5,8 +5,7 @@ export type LogoProps = React.SVGAttributes<SVGElement>;
 export function Logo(props: LogoProps) {
   return (
     <svg
-      width="108"
-      height="38"
+      height={50}
       viewBox="0 0 108 38"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +33,7 @@ export function Logo(props: LogoProps) {
           height="31.8"
           rx="7.9"
           stroke="#D0D5DD"
-          stroke-width="0.2"
+          strokeWidth="0.2"
         />
       </g>
       <path
@@ -49,9 +48,9 @@ export function Logo(props: LogoProps) {
           width="38"
           height="38"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -100,9 +99,9 @@ export function Logo(props: LogoProps) {
           width="31.1959"
           height="19.205"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -136,8 +135,8 @@ export function Logo(props: LogoProps) {
           y2="34"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#145EF0" />
-          <stop offset="1" stop-color="#66E3FA" />
+          <stop stopColor="#145EF0" />
+          <stop offset="1" stopColor="#66E3FA" />
         </linearGradient>
       </defs>
     </svg>

@@ -1,7 +1,5 @@
 import * as React from "react";
-import clsx from "clsx";
-import { bluredBgStyles } from "../components/styles";
-import { Logo } from "../components";
+import { SiteHeader } from "../components";
 import Head from "next/head";
 
 export default function Privacy(): JSX.Element {
@@ -11,13 +9,7 @@ export default function Privacy(): JSX.Element {
         <title>ChatMind</title>
       </Head>
       <div className="relative h-full">
-        <header className="absolute top-0 left-0 z-10 w-full border-b">
-          <div className={clsx("mx-auto max-w-3xl px-3 py-4", bluredBgStyles)}>
-            <div className="flex items-center justify-start">
-              <Logo />
-            </div>
-          </div>
-        </header>
+        <SiteHeader />
         <main className="prose mx-auto max-w-3xl py-20 px-3">
           <h1>Privacy Policy</h1>
           <p>

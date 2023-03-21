@@ -4,13 +4,15 @@ import { bluredBgStyles } from "./styles";
 import { useChat } from "../hooks/use-chat";
 import { Paragraph } from "./typograph";
 import { SignedIn, UserButton, SignedOut, SignInButton } from "@clerk/nextjs";
+import { Logo } from "./logo";
+import { Link } from "./link";
 
-export function Header(): JSX.Element {
+export function ChatHeader(): JSX.Element {
   const { selectedChat } = useChat();
   return (
     <header className="absolute top-0 left-0 z-10 w-full border-b">
       <div className={clsx("mx-auto max-w-3xl py-4", bluredBgStyles)}>
-        <div className="flex min-h-[24px]items-center justify-start">
+        <div className="min-h-[24px]items-center flex justify-start">
           <Paragraph className="px-3">{selectedChat?.title}</Paragraph>
           {process.env.NODE_ENV === "development" && (
             <>
@@ -22,6 +24,34 @@ export function Header(): JSX.Element {
               </SignedOut>
             </>
           )}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+export function SiteHeader() {
+  return (
+    <header
+      className={clsx(
+        "absolute top-0 left-0 z-10 w-full border-b",
+        bluredBgStyles
+      )}
+    >
+      <div className={clsx("mx-auto max-w-3xl px-3 py-4")}>
+        <div className="flex items-center justify-start gap-8">
+          <Logo />
+          <div className="flex gap-4 items-center -mt-1">
+            <Link href={"/chat"} className="text-xl no-underline">
+              Chat
+            </Link>
+            <Link
+              href={"https://github.com/devrsi0n/ChatMind"}
+              className="text-xl no-underline"
+            >
+              GitHub
+            </Link>
+          </div>
         </div>
       </div>
     </header>

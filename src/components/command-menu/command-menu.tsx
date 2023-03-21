@@ -151,7 +151,7 @@ export function CommandMenu({
             No results found.
           </Command.Empty>
           <ChatGroup onSelect={() => setOpen(false)} />
-          <CommandMenu.Separator />
+
           <CommandMenu.Group heading="Actions">
             {actions.map((action) => (
               <Item
@@ -177,40 +177,47 @@ export function CommandMenu({
 
 type ChatGroupProps = { onSelect: () => void };
 function ChatGroup({ onSelect }: ChatGroupProps) {
-  const { chatMap, addChat, selectedId, apiKey, selectChat } = useChat();
+  const { chatMap, chatSize, addChat, selectedId, apiKey, selectChat } =
+    useChat();
+  if (chatSize == 0 && !apiKey) {
+    return <></>;
+  }
   return (
-    <CommandMenu.Group heading="Switch chat">
-      {Object.entries(chatMap).map(([chatId, chat]) => {
-        return (
-          <Item
+    <>
+      <CommandMenu.Group heading="Switch chat">
+        {Object.entries(chatMap).map(([chatId, chat]) => {
+          return (
+            <Item
+              onSelect={() => {
+                selectChat(chatId);
+                onSelect();
+              }}
+              key={chatId}
+            >
+              {chatId === selectedId ? (
+                <CheckCircle size={16} />
+              ) : (
+                <span className="inline-block w-4" />
+              )}
+              <span>{chat.title}</span>
+            </Item>
+          );
+        })}
+        {apiKey && (
+          <CommandMenu.Item
+            key="new chat"
             onSelect={() => {
-              selectChat(chatId);
+              addChat();
               onSelect();
             }}
-            key={chatId}
           >
-            {chatId === selectedId ? (
-              <CheckCircle size={16} />
-            ) : (
-              <span className="inline-block w-4" />
-            )}
-            <span>{chat.title}</span>
-          </Item>
-        );
-      })}
-      {apiKey && (
-        <CommandMenu.Item
-          key="new chat"
-          onSelect={() => {
-            addChat();
-            onSelect();
-          }}
-        >
-          <Plus size={20} />
-          <span>New chat</span>
-        </CommandMenu.Item>
-      )}
-    </CommandMenu.Group>
+            <Plus size={20} />
+            <span>New chat</span>
+          </CommandMenu.Item>
+        )}
+      </CommandMenu.Group>
+      <CommandMenu.Separator />
+    </>
   );
 }
 

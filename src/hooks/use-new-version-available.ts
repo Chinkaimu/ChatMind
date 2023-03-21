@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Workbox, WorkboxLifecycleWaitingEvent } from "workbox-window";
+import { type Workbox, type WorkboxLifecycleWaitingEvent } from "workbox-window";
 
 declare global {
   interface Window {
@@ -17,8 +17,8 @@ export function useNewVersionAvailable() {
       window.workbox !== undefined
     ) {
       const wb = window.workbox as Workbox;
-      const handleSwWating = (event: WorkboxLifecycleWaitingEvent) => {
-        // `event.wasWaitingBeforeRegister` will be false if this is the first time the updated service worker is waiting.
+      const handleSwWating = (_event: WorkboxLifecycleWaitingEvent) => {
+        // `_event.wasWaitingBeforeRegister` will be false if this is the first time the updated service worker is waiting.
         // When `event.wasWaitingBeforeRegister` is true, a previously updated service worker is still waiting.
         // You may want to customize the UI prompt accordingly.
         setIsNewVersionAvailable(true);

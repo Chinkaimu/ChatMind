@@ -42,6 +42,7 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   react-markdown: 8.0.5
+  sass: 1.59.3
   superjson: 1.12.2
   tailwind-scrollbar: 3.0.0
   tailwindcss: 3.2.7
@@ -72,7 +73,7 @@ dependencies:
   eventsource-parser: 0.1.0
   idb-keyval: 6.2.0
   lucide-react: 0.125.0_react@18.2.0
-  next: 13.2.4_biqbaboplfbrettd7655fr4n2y
+  next: 13.2.4_dpxg4zawgzznnxdt7it3f5d76m
   next-pwa: 5.6.0_next@13.2.4
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -87,7 +88,7 @@ dependencies:
 devDependencies:
   '@tailwindcss/line-clamp': 0.4.2_tailwindcss@3.2.7
   '@types/eslint': 8.21.2
-  '@types/next-pwa': 5.6.2_biqbaboplfbrettd7655fr4n2y
+  '@types/next-pwa': 5.6.2_dpxg4zawgzznnxdt7it3f5d76m
   '@types/node': 18.15.3
   '@types/prettier': 2.7.2
   '@types/react': 18.0.28
@@ -101,6 +102,7 @@ devDependencies:
   prettier: 2.8.4
   prettier-plugin-tailwindcss: 0.2.5_prettier@2.8.4
   prisma: 4.11.0
+  sass: 1.59.3
   tailwindcss: 3.2.7_postcss@8.4.21
   typescript: 5.0.2
 
@@ -1222,7 +1224,7 @@ packages:
       '@clerk/clerk-react': 4.12.8_react@18.2.0
       '@clerk/clerk-sdk-node': 4.7.14
       '@clerk/types': 3.31.1
-      next: 13.2.4_biqbaboplfbrettd7655fr4n2y
+      next: 13.2.4_dpxg4zawgzznnxdt7it3f5d76m
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       tslib: 2.4.1
@@ -2006,7 +2008,7 @@ packages:
       '@trpc/client': 10.16.0_@trpc+server@10.16.0
       '@trpc/react-query': 10.16.0_xqgqjjeu4juncpfqrbxjw3t7rq
       '@trpc/server': 10.16.0
-      next: 13.2.4_biqbaboplfbrettd7655fr4n2y
+      next: 13.2.4_dpxg4zawgzznnxdt7it3f5d76m
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-ssr-prepass: 1.5.0_react@18.2.0
@@ -2133,11 +2135,11 @@ packages:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: false
 
-  /@types/next-pwa/5.6.2_biqbaboplfbrettd7655fr4n2y:
+  /@types/next-pwa/5.6.2_dpxg4zawgzznnxdt7it3f5d76m:
     resolution: {integrity: sha512-K5zLZSzrJCOQBay5E7abGp7gQ0q1Pv58dE3RuBo5LQXYQFaCO4JPju0XYdzgLoQ20yhBVZ43AwIcSgCzx9KvqA==}
     dependencies:
       '@types/react': 18.0.28
-      next: 13.2.4_biqbaboplfbrettd7655fr4n2y
+      next: 13.2.4_dpxg4zawgzznnxdt7it3f5d76m
       workbox-build: 6.5.4
     transitivePeerDependencies:
       - '@babel/core'
@@ -3830,6 +3832,9 @@ packages:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
 
+  /immutable/4.3.0:
+    resolution: {integrity: sha512-0AOCmOip+xgJwEVTQj1EfiDDOkPmuyllDuTuEX+DDXUgapLAsBIfkg3sxCYyCEA8mQqZrrxPUGjcOQ2JS3WLkg==}
+
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -4624,7 +4629,7 @@ packages:
       babel-loader: 8.3.0
       clean-webpack-plugin: 4.0.0
       globby: 11.1.0
-      next: 13.2.4_biqbaboplfbrettd7655fr4n2y
+      next: 13.2.4_dpxg4zawgzznnxdt7it3f5d76m
       terser-webpack-plugin: 5.3.7
       workbox-webpack-plugin: 6.5.4
       workbox-window: 6.5.4
@@ -4638,7 +4643,7 @@ packages:
       - webpack
     dev: false
 
-  /next/13.2.4_biqbaboplfbrettd7655fr4n2y:
+  /next/13.2.4_dpxg4zawgzznnxdt7it3f5d76m:
     resolution: {integrity: sha512-g1I30317cThkEpvzfXujf0O4wtaQHtDCLhlivwlTJ885Ld+eOgcz7r3TGQzeU+cSRoNHtD8tsJgzxVdYojFssw==}
     engines: {node: '>=14.6.0'}
     hasBin: true
@@ -4665,6 +4670,7 @@ packages:
       postcss: 8.4.14
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      sass: 1.59.3
       styled-jsx: 5.1.1_react@18.2.0
     optionalDependencies:
       '@next/swc-android-arm-eabi': 13.2.4
@@ -5444,6 +5450,15 @@ packages:
       call-bind: 1.0.2
       get-intrinsic: 1.2.0
       is-regex: 1.1.4
+
+  /sass/1.59.3:
+    resolution: {integrity: sha512-QCq98N3hX1jfTCoUAsF3eyGuXLsY7BCnCEg9qAact94Yc21npG2/mVOqoDvE0fCbWDqiM4WlcJQla0gWG2YlxQ==}
+    engines: {node: '>=12.0.0'}
+    hasBin: true
+    dependencies:
+      chokidar: 3.5.3
+      immutable: 4.3.0
+      source-map-js: 1.0.2
 
   /scheduler/0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
