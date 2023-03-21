@@ -35,6 +35,7 @@ export default function HomePage(): JSX.Element {
               />
             </Button>
             <Button
+              variant="link"
               onClick={() =>
                 router.push("https://github.com/devrsi0n/ChatMind")
               }

@@ -41,13 +41,16 @@ export function SiteHeader() {
       <div className={clsx("mx-auto max-w-3xl px-3 py-4")}>
         <div className="flex items-center justify-start gap-8">
           <Logo />
-          <div className="flex gap-4 items-center -mt-1">
-            <Link href={"/chat"} className="text-xl no-underline">
+          <div className="-mt-1 flex items-center gap-4">
+            <Link
+              href={"/chat"}
+              className="text-xl no-underline hover:underline"
+            >
               Chat
             </Link>
             <Link
               href={"https://github.com/devrsi0n/ChatMind"}
-              className="text-xl no-underline"
+              className="text-xl no-underline hover:underline"
             >
               GitHub
             </Link>

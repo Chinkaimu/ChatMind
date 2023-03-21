@@ -53,7 +53,7 @@ const BaseButton = React.forwardRef<
     <button
       type="button"
       className={clsx(
-        "select-none focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2",
+        "select-none focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition",
         className
       )}
       ref={ref}

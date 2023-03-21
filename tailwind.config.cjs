@@ -59,6 +59,9 @@ const config = {
     require('tailwind-scrollbar'),
     require('@tailwindcss/line-clamp'),
   ],
+  future: {
+    hoverOnlyWhenSupported: true,
+  }
 };
 
 module.exports = config;
