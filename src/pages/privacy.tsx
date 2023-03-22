@@ -1,12 +1,13 @@
 import * as React from "react";
 import { SiteHeader } from "../components";
 import Head from "next/head";
+import { Footer } from '../components/footer';
 
 export default function Privacy(): JSX.Element {
   return (
     <>
       <Head>
-        <title>ChatMind</title>
+        <title>{`ChatMind's privacy policy`}</title>
       </Head>
       <div className="relative h-full">
         <SiteHeader />
@@ -104,6 +105,7 @@ export default function Privacy(): JSX.Element {
             .
           </p>
         </main>
+        <Footer />
       </div>
     </>
   );

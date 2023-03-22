@@ -12,6 +12,7 @@ import {
   Link,
   ListX,
   Plus,
+  Scroll,
   Search,
   Shield,
   Star,
@@ -228,14 +229,19 @@ const links = [
     href: "https://github.com/devrsi0n/ChatMind",
   },
   {
+    name: "Follow on twitter",
+    icon: <Twitter size={16} />,
+    href: "https://twitter.com/devrsi0n",
+  },
+  {
     name: "Privacy policy",
     icon: <Shield size={16} />,
     href: "/privacy",
   },
   {
-    name: "Follow on twitter",
-    icon: <Twitter size={16} />,
-    href: "https://twitter.com/devrsi0n",
+    name: "Terms of service",
+    icon: <Scroll size={16} />,
+    href: "/terms",
   },
 ];
 function LinkGroup(props: ChatGroupProps) {

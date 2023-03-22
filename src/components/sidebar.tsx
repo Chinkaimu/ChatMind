@@ -17,7 +17,7 @@ export function Sidebar(): JSX.Element {
           href="https://twitter.com/devrsi0n"
           className="text-gray-700 hover:text-gray-800"
         >
-          Follow on twitter
+          Follow on Twitter
         </Link>
         <Link
           href="https://github.com/devrsi0n/ChatMind"
@@ -27,6 +27,9 @@ export function Sidebar(): JSX.Element {
         </Link>
         <Link href="/privacy" className="text-gray-700 hover:text-gray-800">
           Privacy policy
+        </Link>
+        <Link href="/terms" className="text-gray-700 hover:text-gray-800">
+          Terms of service
         </Link>
       </div>
     </nav>
