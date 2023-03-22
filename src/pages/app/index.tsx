@@ -159,7 +159,7 @@ const ChatApp: NextPage = () => {
                     </Link>
                   </div>
                 )}
-                <Paragraph className="!mt-3">
+                <Paragraph className="!mt-3 text-sm">
                   Give us a ⭐ on{" "}
                   <a
                     href="https://github.com/devrsi0n/ChatMind"
@@ -199,7 +199,7 @@ const ChatApp: NextPage = () => {
                         ? `Ask anything.${
                             !isMobile() ? " (Shift + Enter for new line)" : ""
                           }`
-                        : "Enter your OpenAI API key to start."
+                        : "Paste your OpenAI API key to start."
                     }
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -224,24 +224,26 @@ const ChatApp: NextPage = () => {
                   </Button>
                 </div>
                 <div className="hidden gap-2 py-1 sm:flex">
-                  <Subtle className="flex items-center gap-1">
-                    <span>Want a new chat? Try</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        dispatchEvent(
-                          new KeyboardEvent("keydown", {
-                            key: "k",
-                            metaKey: true,
-                          })
-                        );
-                      }}
-                    >
-                      <span>Command menu</span>
-                      <CommandShortCut />
-                    </Button>
-                  </Subtle>
+                  {apiKey && (
+                    <Subtle className="flex items-center gap-1">
+                      <span>Want a new chat? Try</span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          dispatchEvent(
+                            new KeyboardEvent("keydown", {
+                              key: "k",
+                              metaKey: true,
+                            })
+                          );
+                        }}
+                      >
+                        <span>Command menu</span>
+                        <CommandShortCut />
+                      </Button>
+                    </Subtle>
+                  )}
                 </div>
               </div>
             </div>
@@ -264,10 +266,7 @@ function ChatHead() {
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="theme-color" content="#000000" />
-      <meta
-        name="description"
-        content="Faster, smoother ChatGPT experience."
-      />
+      <meta name="description" content="Faster, smoother ChatGPT experience." />
       <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       <link
         rel="icon"
