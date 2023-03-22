@@ -3,7 +3,7 @@
   "short_name": "ChatMind",
   "theme_color": "#155EEF",
   "background_color": "#FFFFFF",
-  "start_url": "/",
+  "start_url": "/chat",
   "display": "standalone",
   "orientation": "portrait",
   "icons": [

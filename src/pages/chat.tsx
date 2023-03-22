@@ -263,7 +263,6 @@ export function ChatHead() {
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       <meta name="apple-mobile-web-app-title" content="ChatMind" />
-      <meta name="description" content="Enhancing your ChatGPT experience" />
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="msapplication-config" content="/icons/browserconfig.xml" />
@@ -288,7 +287,6 @@ export function ChatHead() {
           href="/icons/safari-pinned-tab.svg"
           color="#5bbad5"
         /> */}
-      <link rel="shortcut icon" href="/favicon.ico" />
       <link
         rel="apple-touch-startup-image"
         href="/assets/icons/apple-splash-2048-2732.png"
