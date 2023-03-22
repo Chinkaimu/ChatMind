@@ -3,7 +3,7 @@ import Head from "next/head";
 import React from "react";
 import { Send } from "lucide-react";
 
-import { useLocalStorage } from "../hooks/use-local-storage";
+import { useLocalStorage } from "../../hooks/use-local-storage";
 import {
   ChatHeader,
   Button,
@@ -13,17 +13,17 @@ import {
   Sidebar,
   Subtle,
   Paragraph,
-} from "../components";
-import { type ChatMessage, type ChatGPTMessage } from "../types";
-import { useChat } from "../hooks/use-chat";
+} from "../../components";
+import { type ChatMessage, type ChatGPTMessage } from "../../types";
+import { useChat } from "../../hooks/use-chat";
 import { useIsMounted } from "usehooks-ts";
-import { CommandShortCut } from "../components/command-menu";
+import { CommandShortCut } from "../../components/command-menu";
 import { useUser } from "@clerk/nextjs";
-import { Banner } from "../components/banner";
-import { isMobile } from "../components/utils/is-mobile";
-import { Link } from "../components/link";
+import { Banner } from "../../components/banner";
+import { isMobile } from "../../components/utils/is-mobile";
+import { Link } from "../../components/link";
 
-const ChatPage: NextPage = () => {
+const ChatApp: NextPage = () => {
   const [input, setInput] = useLocalStorage("chatmind.input", "");
   const listRef = React.useRef<HTMLElement>(null);
   const scrollListIntoView = () => {
@@ -197,9 +197,7 @@ const ChatPage: NextPage = () => {
                     placeholder={
                       apiKey
                         ? `Ask anything.${
-                            !isMobile()
-                              ? " (Shift + Enter for new line)"
-                              : ""
+                            !isMobile() ? " (Shift + Enter for new line)" : ""
                           }`
                         : "Enter your OpenAI API key to start."
                     }
@@ -254,9 +252,9 @@ const ChatPage: NextPage = () => {
   );
 };
 
-export default ChatPage;
+export default ChatApp;
 
-export function ChatHead() {
+function ChatHead() {
   return (
     <Head>
       <meta name="application-name" content="ChatMind" />
@@ -265,13 +263,10 @@ export function ChatHead() {
       <meta name="apple-mobile-web-app-title" content="ChatMind" />
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
-      <meta name="msapplication-config" content="/icons/browserconfig.xml" />
-      <meta name="msapplication-TileColor" content="#2B5797" />
-      <meta name="msapplication-tap-highlight" content="no" />
       <meta name="theme-color" content="#000000" />
       <meta
         name="description"
-        content="Enhancing your ChatGPT experience with ChatMind."
+        content="Faster, smoother ChatGPT experience."
       />
       <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       <link
@@ -282,11 +277,6 @@ export function ChatHead() {
       />
       <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
       <link rel="manifest" href="/manifest.json" />
-      {/* <link
-          rel="mask-icon"
-          href="/icons/safari-pinned-tab.svg"
-          color="#5bbad5"
-        /> */}
       <link
         rel="apple-touch-startup-image"
         href="/assets/icons/apple-splash-2048-2732.png"
@@ -328,7 +318,7 @@ export function ChatHead() {
       <meta name="twitter:title" content="ChatMind" />
       <meta
         name="twitter:description"
-        content="Enhancing your ChatGPT experience"
+        content="Faster, smoother ChatGPT experience"
       />
       <meta
         name="twitter:image"
@@ -339,7 +329,7 @@ export function ChatHead() {
       <meta property="og:title" content="ChatMind" />
       <meta
         property="og:description"
-        content="Enhancing your ChatGPT experience"
+        content="Faster, smoother ChatGPT experience"
       />
       <meta property="og:site_name" content="ChatMind" />
       <meta property="og:url" content="https://chatmind.co" />

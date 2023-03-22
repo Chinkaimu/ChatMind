@@ -43,14 +43,14 @@ export function SiteHeader() {
           <Logo />
           <div className="-mt-1 flex items-center gap-4">
             <Link
-              href={"/chat"}
-              className="text-xl no-underline hover:underline"
+              href={"https://app.chatmind.co"}
+              className="text-xl font-medium no-underline hover:underline"
             >
               Chat
             </Link>
             <Link
               href={"https://github.com/devrsi0n/ChatMind"}
-              className="text-xl no-underline hover:underline"
+              className="text-xl font-medium no-underline hover:underline"
             >
               GitHub
             </Link>

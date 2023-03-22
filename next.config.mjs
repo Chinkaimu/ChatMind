@@ -10,7 +10,7 @@ import nextPWA from 'next-pwa';
 
 const withPWA = nextPWA({
   dest: 'public',
-  scope: "/chat",
+  scope: "/",
   register: false,
   skipWaiting: false
 });
